@@ -1,0 +1,19 @@
+# Project metadata
+PROJECT_NAME = "Comercio Fluvial"
+
+# Documentation Result 
+OUTPUT_DIRECTORY = "./docs/" 
+GENERATE_HTML = YES
+HTML_OUTPUT = YES
+
+
+
+# Documentation formatting
+MARKDOWN_SUPPORT = YES
+AUTOLINK_SUPPORT = YES
+
+# Documentation Input 
+INPUT = ./src/
+FILE_PATERNS = *.cc *.hh
+
+
