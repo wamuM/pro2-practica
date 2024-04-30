@@ -4,9 +4,7 @@ PROJECT_NAME = "Comercio Fluvial"
 # Documentation Result 
 OUTPUT_DIRECTORY = "./docs/" 
 GENERATE_HTML = YES
-HTML_OUTPUT = YES
-
-
+HTML_OUTPUT = "./html/" 
 
 # Documentation formatting
 MARKDOWN_SUPPORT = YES
