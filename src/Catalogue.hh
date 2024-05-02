@@ -19,7 +19,7 @@ struct Product {
 */
 class Catalogue{
 private:
-	vector<Product> _container;//!< @brief A vector that contains the Products
+	std::vector<Product> _container;//!< @brief A vector that contains the Products
 	// A vector was chosen because of the constant look up time
 	int _size;//!< @brief The number of products
 public:
@@ -39,6 +39,17 @@ public:
 	 * @return The number of products
 	 */
 	int size() const;
+	
+	/**
+	 * @brief Checks if the catalogue has said product
+	 * @pre True
+	 *
+	 * @param id The id of the product
+	 * @return If the catalogue has the product
+	 *
+	 * @post If the catalogue has the product it returns true, false otherwise
+	 */
+	bool hasProduct(int id) const;
 
 	/**
 	 * @brief Gets the specified product 
@@ -49,7 +60,7 @@ public:
 	 * 
 	 * @post The product is returned
 	 */
-	Product get(int id) const;
+	Product getProduct(int id) const;
 
 	/**
 	 * @brief Modifies the specified product
@@ -77,15 +88,11 @@ public:
 
 	/**
 	* @brief Reads <em>n</em> products from the <em>std input</em> and adds them to the catalogue
-	*
-	* Reads <em>n</em> consecutive products from the <em>std input</em>. Assuming every product follows this format: <weight> <volume> (where weight is its weight, withouth the unit, and volume is its volume, without the unit)
-	* The first product will be assigned <em>size()<em> as its <em>id</em>. And the next one will be assigned size()+1 and so on.
+	* It first reads <em>n</em> from the std input. Then it reads <em>n</em> consecutive products from the <em>std input</em>. Assuming every product follows this format: <weight> <volume> (where weight is its weight, withouth the unit, and volume is its volume, without the unit)
+	* The first product will be assigned <em>size()</em> as its <em>id</em>. And the next one will be assigned size()+1 and so on.
 	*
 	* @pre There are n product descriptions in the std input
-	*
-	* @param n The number of products to be read.
-	*
 	* @post The products have been read from the input stream and added to the catalogue
 	*/
-	void read(int n);
+	void read();
 }

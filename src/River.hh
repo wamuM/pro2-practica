@@ -4,6 +4,13 @@
  */
 #pragma once
 
+#include <map>
+#include <string>
+
+#include "City.hh"
+
+using namespace std;
+
 class River{
 private:
 	map<string,City> _cities;//!< @brief A map that links a city id to its city.
@@ -13,4 +20,8 @@ public:
 	* @brief The default constructor of River
 	*/
 	River();
+
+	bool hasCity(string cityId) const;
+	City getCity(string cityId) const; 
+	void read();
 }

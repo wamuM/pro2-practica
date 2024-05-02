@@ -5,6 +5,7 @@ PROJECT_NAME = "Comercio Fluvial"
 OUTPUT_DIRECTORY = "./docs/" 
 GENERATE_HTML = YES
 HTML_OUTPUT = "./html/" 
+DOXYFILE_LANGUAGE = English
 
 # Documentation formatting
 MARKDOWN_SUPPORT = YES
@@ -12,6 +13,6 @@ AUTOLINK_SUPPORT = YES
 
 # Documentation Input 
 INPUT = ./src/
-FILE_PATERNS = *.cc *.hh
-
+FILE_PATTERNS = *.cc *.hh
+EXTRACT_PRIVATE = YES
 

@@ -2,9 +2,15 @@ using namespace std;
 #include "io_handler.hh"
 
 int main(){
-	//TODO Read Products
+	Catalogue catalogue;
+	catalogue.read();
+
+	River river;
+	river.read();
 	
-	//TODO Read Basin
+	Ship ship;
+
 	bool halt = false;
-	while(not halt) command_interpreter(halt);
+	while(not halt) interpet_command(halt, river, catalogue, ship);
+
 }
