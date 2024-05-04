@@ -13,6 +13,7 @@ private:
 	map<int,int> _amounts;//<! Where the amounts are stored
 public:
 	void setAmount(int idProduct, int newAmount);
+	void modifyAmount(int idProduct, int amountToAdd);
 	int getAmount(int idProduct);
 	int hasProduct(int idProduct);
 	void print() const;

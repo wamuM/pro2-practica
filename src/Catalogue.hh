@@ -5,15 +5,9 @@
 
 #pragma once
 #include <vector>
-#include <iostream>
-/** 
-* @brief A simple struct that abstracts products
-*/
-struct Product {
-	int weight;//!< @brief The weight of the Product
-	int volume;//!< @brief The volume of the Product
-}; 
+#include <utility>
 
+typedef std::pair<int,int> Product;//<! @brief Where the first value is the weight of the product and the second value is the volume
 /**
 * @brief The container of all products with their descriptions
 */
@@ -27,12 +21,6 @@ public:
 	* @brief The default constructor for Catalogue
 	*/
 	Catalogue();
-
-	/**
-	* @brief The default constructor for Catalogue
-	* @param allocate_size	The size of the internal container (not the number of products)
-	*/
-	Catalogue(int allocate_size );
 
 	/** 
 	 * @brief Returns the number of products 
@@ -72,7 +60,7 @@ public:
 	 * 
 	 * @post The product has been modified
 	 */
-	void set(int id, int weight, int volume);
+	void setProduct(int id, int weight, int volume);
 	
 	/**
 	 * @brief Adds a new product to the catalogue
@@ -80,11 +68,10 @@ public:
 	 *
 	 * @param weight The weight for the new product
 	 * @param volume The volume for the new product 
-	 * @return The id of the new product
 	 *
 	 * @post The product has been added to the catalogue
 	 */
-	int emplace(int weight, int volume);
+	void emplace(int weight, int volume);
 
 	/**
 	* @brief Reads <em>n</em> products from the <em>std input</em> and adds them to the catalogue

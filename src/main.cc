@@ -7,8 +7,9 @@ int main(){
 
 	River river;
 	river.read();
-	
+
 	Ship ship;
+	ship.read();
 
 	bool halt = false;
 	while(not halt) interpet_command(halt, river, catalogue, ship);
