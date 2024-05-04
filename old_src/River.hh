@@ -8,7 +8,6 @@
 #include <string>
 
 #include "City.hh"
-#include "Ship.hh"
 
 class River{
 private:
@@ -37,7 +36,7 @@ public:
 	*
 	* @return The specified city
 	*/
-	City get_city(const std::string& cityId); 
+	City get_city(const std::string& cityId) const; 
 
 	void set_city(const std::string& cityId, City city); 
 
@@ -49,4 +48,4 @@ public:
 	* @brief Reads the river structure from the std input
 	*/
 	void read();
-};
+}

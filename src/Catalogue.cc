@@ -1,30 +1,34 @@
 #include "Catalogue.hh"
 
+#include <vector>
 #include <iostream>
+
 using namespace std;
 
 Catalogue::Catalogue(){
-	this->_container = vector<Product>(0);
-}
-int Catalogue::size(){
-	return this->_container.size();
+	_products = vector<Product>(0);
 }
 
-int Catalogue::hasProduct(int id){
-	return id < this->size() and id >= 0;
+int Catalogue::size() const{
+	return _products.size();
 }
 
-Product Catalogue::getProduct(int id){
-	return this->_container[id];
+bool Catalogue::has_product(int productId) const{
+	return _products.size() >= productId and productId > 0;
 }
 
-void Catalogue::setProduct(int id, int weight, int volume){
-	this->_container[id].weight = weight;
-	this->_container[id].volume = volume		
+int Catalogue::emplace_product(int weight, int volume){
+	_products.emplace_back(weight, volume);
+	return _products.size();
+};
+
+Product Catalogue::get_product(int productId) const{
+	return _products[productId-1];
 }
 
-void Catalogue::emplace(int weight, int volume){
-	this->_container.emplace_back(weight, volume);
+void Catalogue::print_product(int productId) const{
+	cout<<_products[productId-1].first<<' '
+	    <<_products[productId-1].second<<endl;
 }
 
 void Catalogue::read(){
@@ -33,6 +37,6 @@ void Catalogue::read(){
 	while(n--){
 		int weight, volume;
 		cin>>weight>>volume;
-		this->emplace(weight,volume);		
-	}	
-}
+		emplace_product(weight,volume);
+	}
+};

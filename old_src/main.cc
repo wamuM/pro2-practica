@@ -1,9 +1,5 @@
-#include "Catalogue.hh"
-#include "River.hh"
-#include "Ship.hh"
-
+using namespace std;
 #include "io_handler.hh"
-
 
 int main(){
 	Catalogue catalogue;

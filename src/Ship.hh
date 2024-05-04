@@ -1,35 +1,30 @@
-/**
-* @file Ship.hh
-* @brief This file contains the definition of Ship
-*/
 #pragma once
 
 #include <string>
 #include <list>
 
-#include "River.hh"
-/**
-* @brief The ship that does fluvial trade
-*/
-class Ship{
+
+class Ship {
 private:
-	int _buyId;//<! @brief The id of the product the ship wants to buy
-	int _buyAmount;//<! @brief The amount of the product it wants to buy
-	int _sellId;//<! @brief The id of the product the ship wants to sell
-	int _sellAmount;//<! @brief The amount of the product the ship wants to sell
-	std::list<std::string> _log;//<! @brief A log of the cities the ship has visited
+	int _stock_amount;
+	int _stock_id;
+
+	int _demand_amount;
+	int _demand_id;
+
+	std::list<std::string> _log;
 public:
-	void setBuy(int buyId, int buyAmount);
-	void setBuyAmount(int buyAmount);
+	Ship();
 
-	void setSell(int sellId, int sellId);
-	void setSellAmount(int sellAmount);
+	int get_stock_id()  const;
+	int get_demand_id() const;
 
-	void printCargo() const;
-	void printLog() const;
+	int get_stock_amount() const;
+	int get_demand_amount()const;
+
+	std::list<std::string> get_log() const;
+
+	void clear_log();
 	
-	void trade(River& river, std::string cityId1, std::string cityId2);
-	void redistribute(River& river);
-	void travel(River& river);
-}
-
+	void read();
+};

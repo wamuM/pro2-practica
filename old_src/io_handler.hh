@@ -16,5 +16,5 @@
 * @param halt A boolean passed by reference that is set to true whenever the program should stop
 * @post The first command in the std input stream has been read (thus removed from the stream) and executed
 */
-void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& ship);
+void interpret_command(bool& halt);
 

@@ -1,32 +1,45 @@
-/**
- * @file City.hh
- * @brief This file contains the definition of City and Inventory
- */
 #pragma once
 
-#include <pair>
 #include <string>
+#include <utility>
+#include <map>
 
-#include "Inventory.hh"
+#include "Catalogue.hh"
+
+typedef std::pair<int,int> Amount;
+typedef std::map<int,Amount> Inventory;
 
 class City {
 private:
-	Inventory _stock;
-	Inventory _offer; 
-		
+	Inventory _inventory;
+
+	Product _total_product;
+
+	std::string _city_left;
+	std::string _city_right;
+
 public:
 	City();
-	Inventory get_stock() const;
-	Inventory get_offer() const;
 	
-	void set_stock();
-	void set_offer();
+	void set_right(const std::string& cityId);
+	void set_left( const std::string& cityId);
 
-	void set_right();
-	void set_left();
+	bool has_product(int productId) const;
 
-	
-	std::pair<int,int> get_totals() const;		
+	void set_product_amount(int productId, const Product& product, int stock, int demand);
 
-	void print() const;
-}
+	int get_stock(int productId);
+	int get_demand(int productId);
+
+	Amount get_product_amount(int productId);
+
+	Product get_total() const;
+
+	void remove_product(int productId, const Product& product); 
+
+	void print_city() const;
+	void print_product_amount(int productId);
+	void print_total() const;
+
+	void read_product_amount(int productId, const Product& product);
+};

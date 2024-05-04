@@ -1,8 +1,8 @@
-#include "io_hanlder.hh"
+#include "io_handler.hh"
 
 #include <string>
 #include <iostream>
-#include <stream>
+#include <sstream>
 using namespace std;
 
 #include "River.hh"
@@ -11,6 +11,9 @@ using namespace std;
 #include "City.hh"
 
 void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& ship){
+	river.read();
+	catalogue.read();
+	ship.read();
 	string command;
 	getline(cin,command);
 	istringstream args(command);
@@ -18,6 +21,7 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 	//echo command
 	cout<<'#'<<command;
 
+	string verb;
 	args>>verb;
 	if(verb != "//"){
 	if(verb == "lr" or verb == "leer_rio"){
