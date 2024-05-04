@@ -12,6 +12,6 @@ int main(){
 	ship.read();
 
 	bool halt = false;
-	while(not halt) interpet_command(halt, river, catalogue, ship);
+	while(not halt) interpret_command(halt, river, catalogue, ship);
 
 }
