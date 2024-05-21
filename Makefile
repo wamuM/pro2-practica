@@ -1,9 +1,12 @@
-
-# Compilation
+# Compiler
 CC := g++ 
 ## PRO2 Default Jutge flags 
 C_FLAGS := -D_JUDGE_ -D_GLIBCXX_DEBUG -O2 -Wall -Wextra -Werror -Wno-sign-compare -std=c++11 -fno-extended-identifiers
 
+# Default target set to the executable
+.DEFAULT_GOAL := ./target/program 
+
+# Compilation Targets:
 SRC := $(wildcard ./src/*.cc)
 OBJ := $(patsubst ./src/%.cc,./objects/%.o,$(SRC))
 ./target/program: $(OBJ)
@@ -14,13 +17,20 @@ OBJ := $(patsubst ./src/%.cc,./objects/%.o,$(SRC))
 
 # Other targets
 .PHONY: clean tar check docs 
+
+## Generates docs
 docs:
 	doxygen Doxyfile
+## Checks i/o samples against code
 check: ./target/program 
 	./samples/check.sh
+
+## Cleans the codebase (same logic as in .gitignore)
 clean:
 	rm -f ./upload.tar 
 	rm -rf ./docs/*
 	rm -rf ./target/* ./objects/*
+
+## Packs-up the code
 tar: clean docs
 	tar -cvf ./upload.tar --exclude='.git' . 
