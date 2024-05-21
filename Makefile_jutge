@@ -1,0 +1,25 @@
+# ATENTION: This version of the Makefile is for jutge.org only
+# The full version can be found in the repo (github/wamuM) @see README.md
+
+CC := g++ 
+## PRO2 Default Jutge flags 
+C_FLAGS := -D_JUDGE_ -D_GLIBCXX_DEBUG -O2 -Wall -Wextra -Werror -Wno-sign-compare -std=c++11 -fno-extended-identifiers
+
+# Default target set to the executable
+.DEFAULT_GOAL := ./program.exe
+
+# Compilation Targets:
+SRC := $(wildcard ./*.cc)
+OBJ := $(patsubst ./%.cc,./%.o,$(SRC))
+program.exe: $(OBJ)
+	$(CC) $(C_FLAGS) -o $@ $^
+
+%.o: ./%.cc
+	$(CC) $(C_FLAGS) -o $@ -c $<
+
+# Other targets
+.PHONY: docs 
+
+## Generates docs
+docs:
+	doxygen Doxyfile
