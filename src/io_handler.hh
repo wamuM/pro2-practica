@@ -18,3 +18,16 @@
 */
 void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& ship);
 
+/**
+* @brief A function that consumes a specified number of tokens from the std input
+*
+* @pre True
+* @param numberOfTokens The number of tokens ("words") to be consumed
+*
+* @post A total of numberOfTokens tokens have been consumed from the std input
+*
+* @cplx Linear to numberOfTokens
+*/
+void consume(int numberOfTokens);
+}
+

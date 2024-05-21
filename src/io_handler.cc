@@ -10,10 +10,12 @@ using namespace std;
 #include "Ship.hh"
 #include "City.hh"
 
+
+void consume(int numberOfTokens){
+	string dummy;//I'm sure there is a better way of doing this
+	for(int i = 0; i < numberOfTokens;++i)cin>>dummy;
+}
 void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& ship){
-	river.read();
-	catalogue.read();
-	ship.read();
 	string command;
 	getline(cin,command);
 	istringstream args(command);
@@ -23,8 +25,13 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 
 	string verb;
 	args>>verb;
-	if(verb != "//"){
+
+	if(verb == "//")return;
+		
 	if(verb == "lr" or verb == "leer_rio"){
+		river.clear();
+		river.read_river();
+		ship.
 	}else if(verb == "li" or verb == "leer_inventario"){
 	}else if(verb == "ls" or verb == "leer_inventarios"){
 	}else if(verb == "mb" or verb == "modificar_barco"){
@@ -40,8 +47,7 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 	}else if(verb == "co" or verb == "comerciar"){
 	}else if(verb == "re" or verb == "redistribuir"){
 	}else if(verb == "hv" or verb == "hacer_viaje"){
-	}else if(verb == "fin")halt = true;
-         else cout<<"error: commando desconocido"<<endl;
-	}	
+	}else if(verb == "fin"){ halt = true; } 
+        else cout<<"error: commando desconocido"<<endl;
 };
 
