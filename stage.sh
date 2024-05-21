@@ -1,21 +1,18 @@
 #!/usr/bin/bash 
 
 # This file puts all the other files of the project into the ./staged.d/ directory so they can be properly uploaded to jutge.org
+directory="./tmp-stage.sh-$$"
 
-directory="to_stage"
-archive_name="./practica.tar"
+mkdir $directory
 
-mkdir "./$directory"
-
-cp ./src/* "./$directory_name/" 
-cp ./Makefile_jutge "./$directory_name/Makefile"
-cp ./README.md "./$directory_name/README.md"
-cp ./Doxyfile "./$directory_name/Doxyfile"
+cp ./src/* "$directory/" 
+cp ./Makefile_jutge "$directory/Makefile"
+cp ./README.md "$directory/README.md"
+cp ./Doxyfile "$directory/Doxyfile"
 
 cd $directory
-tar -cvf "../$archive_name" *
+tar -cvf "../practica.tar" * 
 cd ..
 
-rm -r "./$directory"
+rm -rf $directory
 unset directory
-
