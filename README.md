@@ -1,6 +1,6 @@
 # PRO2 Practica
 ## Note for the jutge.org version
-If you got this code from jutge.org, you are most likely my teacher, I would hightly recommend visiting the [github repo](https://github.com/wamuM/practica-pro2) which has a more structured code (directories, better makefile, etc) that wasn't allowed in jutge.org. 
+If you got this code from jutge.org, you are most likely my teacher, I would hightly recommend visiting the [github repo](https://github.com/wamuM/pro2-practica) which has a more structured code (directories, better makefile, etc) that wasn't allowed in jutge.org. 
 
 Note: The executable in the github repo's version is `./target/program`
 

@@ -37,6 +37,7 @@ void Ship::clear_log(){
 	if(_log.begin() != _log.end())_log.erase(_log.begin(),_log.end());
 }
 
-void Ship::read(){
-	cin>>_stock_id>>_stock_amount>>_demand_id>>_demand_amount;
+void Ship:print() const{
+	_print_market();
+	_print_log();
 }

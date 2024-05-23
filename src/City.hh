@@ -10,8 +10,8 @@
 
 #include "Catalogue.hh"
 
-typedef std::pair<int,int> Amount;//!< @brief A type that describes the amount of stock and demand of something
-typedef std::map<int,Amount> Inventory;//!< @brief A type that links an product id to an Amount
+typedef std::pair<int,int> Market;//!< @brief A type that describes the amount of supply and demand of something
+typedef std::map<int,Market> Inventory;//!< @brief A type that links an product id to an Amount
 
 /**
 * @brief A class that represents a city
@@ -24,6 +24,18 @@ private:
 
 	std::string _city_left;//!< @brief The city, looking south, at the left of this one
 	std::string _city_right;//!< @brief The city, looking south, at the right of this one
+	/**
+	* @brief Reads the amount (supply and demand) of a product from the std input
+	*
+	* @pre True
+	* @param productId The id of the product
+	* @param product The product object
+	* 
+	* @post The supply and demand have been read and consumed from the std input and are now in the city
+	*
+	* @cplx Logarithmic in the number of products in the city 
+	*/
+	void _read_product_market(int productId, const Product& product);
 
 public:
 	/**
@@ -68,32 +80,32 @@ public:
 	bool has_product(int productId) const;
 
 	/**
-	* @brief it sets the stock and demand of a product
+	* @brief it sets the supply and demand of a product
 	*
 	* @pre True
 	* @param productId The id of the product
 	* @param product The product object 
-	* @param stock The new stock of that product in the city
+	* @param supply The new supply of that product in the city
 	* @param demand The new demand of that product in the city
 	*
-	* @post The product stock and demand has been set 
+	* @post The product supply and demand has been set 
 	*
 	* @cplx Logarithmic in the number of products in the city
 	*/
-	void set_product_amount(int productId, const Product& product, int stock, int demand);
+	void set_product_market(int productId, const Product& product, int supply, int demand);
 
 	/**
-	* @brief Returns the stock of a product in the city
+	* @brief Returns the supply of a product in the city
 	*
 	* @pre True
 	* @param productId The id of the product  
 	*
-	* @return The stock of product in the city
+	* @return The supply of product in the city
 	* @post True
 	*
 	* @cplx Logarithmic in the number of products in the city
 	*/
-	int get_stock(int productId);
+	int get_supply(int productId);
 
 	/**
 	* @brief Returns the demand of a product in the city
@@ -109,7 +121,7 @@ public:
 	int get_demand(int productId);
 
 	/**
-	* @brief Returns the amount(stock and demand) of a product in the city
+	* @brief Returns the market(supply and demand) of a product in the city
 	*
 	* @pre True
 	* @param productId The id of the product  
@@ -119,7 +131,7 @@ public:
 	*
 	* @cplx Logarithmic in the number of products in the city
 	*/
-	Amount get_product_amount(int productId);
+	Amount get_product_market(int productId);
 
 	/**
 	* @brief Returns the total weight and volume of products in the city
@@ -157,15 +169,15 @@ public:
 	void print_city() const;
 
 	/**
-	* @brief Prints the amount(stock and demand) of product in the city into the std output
+	* @brief Prints the amount(supply and demand) of product in the city into the std output
 	*
 	* @pre True
 	*
-	* @post The amount of product in the city has been printed into the std output
+	* @post The amount of product and its demand in the city has been printed into the std output
 	*
 	* @cplx Logarithmic in the number of products in the city
 	*/
-	void print_product_amount(int productId);
+	void print_inventory(int productId);
 
 	/**
 	* @brief Prints the total weight and volume of products in the city into the std output
@@ -177,16 +189,8 @@ public:
 	* @cplx Constant 
 	*/
 	void print_total() const;
-	/**
-	* @brief Reads the amount (stock and demand) of a product from the std input
-	*
-	* @pre True
-	* @param productId The id of the product
-	* @param product The product object
-	* 
-	* @post The stock and demand have been read and consumed from the std input and are now in the city
-	*
-	* @cplx Logarithmic in the number of products in the city 
-	*/
-	void read_product_amount(int productId, const Product& product);
+
+	void print() const;
+
+	bool read_inventory(const Catalogue& catalogue);
 };

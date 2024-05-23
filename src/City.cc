@@ -20,15 +20,15 @@ void City::set_left( const string& cityId){
 	_city_left = cityId;
 }
 
-void City::set_product_amount(int productId, const Product& product, int stock, int demand){
+void City::set_product_market(int productId, const Product& product, int supply, int demand){
 	remove_product(productId, product);
-	_inventory[productId] = Amount(stock,demand);
-	_total_product.first  += stock*product.first;
-	_total_product.second += stock*product.second;
+	_inventory[productId] = Market(supply,demand);
+	_total_product.first  += supply*product.first;
+	_total_product.second += supply*product.second;
 
 }
 
-int City::get_stock(int productId){
+int City::get_supply(int productId){
 	return _inventory[productId].first;
 }
 int City::get_demand(int productId){
@@ -39,7 +39,7 @@ bool City::has_product(int productId) const{
 	return _inventory.count(productId) == 1;
 }
 
-Amount City::get_product_amount(int productId){
+market City::get_product_market(int productId){
 	return _inventory[productId];
 }
 Product City::get_total() const{
@@ -47,32 +47,42 @@ Product City::get_total() const{
 }
 
 void City::remove_product(int productId, const Product& product){
-	_total_product.first  -= get_stock(productId)*product.first;
-	_total_product.second -= get_stock(productId)*product.second;
-	_inventory[productId] = Amount(0,0);
+	_total_product.first  -= get_supply(productId)*product.first;
+	_total_product.second -= get_supply(productId)*product.second;
+	_inventory[productId] = market(0,0);
 
 }
 
 void City::print_city() const{
 	for(auto it = _inventory.begin(); it != _inventory.end(); ++it){
-		Amount amount = it->second;
+		Market market = it->second;
 		cout<<    it->first <<' '
-		    << amount.first <<' '
-		    << amount.second<<endl;
+		    << market.first <<' '
+		    << market.second<<endl;
 	}
 }
-void City::print_product_amount(int productId){
-	Amount amount = get_product_amount(productId);
-	cout<< amount.first  <<' '
-	    << amount.second <<endl;          
+void City::print_product_market(int productId){
+	Market market = get_product_market(productId);
+	cout<< market.first  <<' '
+	    << market.second <<endl;          
 }
 
 void City::print_total() const{
 	cout<< _total_product.first  <<' '
 	    << _total_product.second <<endl;
 }
-void City::read_product_amount(int productId, const Product& product){
-	int stock, demand;
-	cin>>stock>>demand;
-	set_product_amount(productId, product, stock, demand);
+void City::_read_product_market(int productId, const Product& product){
+	int supply, demand;
+	cin>>supply>>demand;
+	set_product_market(productId, product, supply, demand);
+}
+
+bool City::read_inventory(const Catalogue& catalogue){
+	while(productmarket--){
+		int productId;
+		cin>>productId;
+		if(not catalogue.has_product(productId))return false;
+		city.read_product_market(productId,catalogue.get_product(productId));
+	}
+	return true;
 }
