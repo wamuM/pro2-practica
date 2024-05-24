@@ -20,6 +20,13 @@ void City::set_left( const string& cityId){
 	_city_left = cityId;
 }
 
+string City::get_right() const{
+	return _city_right;	
+}
+string City::get_left() const{
+	return _city_left;
+}
+
 void City::set_product_market(int productId, const Product& product, int supply, int demand){
 	remove_product(productId, product);
 	_inventory[productId] = Market(supply,demand);
@@ -28,11 +35,19 @@ void City::set_product_market(int productId, const Product& product, int supply,
 
 }
 
+void City::add_supply(int productId, const Product& product, int amount){
+	_inventory[productId].first += amount;
+	_total_product.first  += amount*product.first;
+	_total_product.second += amount*product.second;
+}
 int City::get_supply(int productId){
 	return _inventory[productId].first;
 }
 int City::get_demand(int productId){
 	return _inventory[productId].second;
+}
+int City::get_surplus(int productId){
+	return get_supply(productId) - get_demand(productId);
 }
 
 bool City::has_product(int productId) const{
@@ -46,6 +61,13 @@ Product City::get_total() const{
 	return _total_product;
 }
 
+Inventory::iterator City::inventory_begin(){
+	return _inventory.begin();
+}
+Inventory::iterator City::inventory_end(){
+	return _inventory.end();
+}
+
 void City::remove_product(int productId, const Product& product){
 	_total_product.first  -= get_supply(productId)*product.first;
 	_total_product.second -= get_supply(productId)*product.second;
@@ -56,9 +78,10 @@ void City::remove_product(int productId, const Product& product){
 void City::print_city() const{
 	for(auto it = _inventory.begin(); it != _inventory.end(); ++it){
 		Market market = it->second;
-		cout<<    it->first <<' '
-		    << market.first <<' '
-		    << market.second<<endl;
+		if(market.second != 0)
+			cout<<    it->first <<' '
+			    << market.first <<' '
+			    << market.second<<endl;
 	}
 }
 void City::print_product_market(int productId){

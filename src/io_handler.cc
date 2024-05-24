@@ -176,14 +176,18 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 
 	}else if(verb == "co" or verb == "comerciar"){
 		string cityId1, cityId2;
-		if(not river.has_city(cityId1))error(CITY_N_EXIST);
-		else if(cityId1 == cityId2)error(SAME_CITY);
+		args>>cityId1>>cityId2;
+		     if(not river.has_city(cityId1))error(CITY_N_EXIST);
 		else if(not river.has_city(cityId2))error(CITY_N_EXIST); 
+		else if(cityId1 == cityId2)         error(SAME_CITY);
 		else river.trade(ship, cityId1, cityId2);
+
 	}else if(verb == "re" or verb == "redistribuir"){
 		river.redistribute(ship);
+
 	}else if(verb == "hv" or verb == "hacer_viaje"){
 		river.do_trip(ship);
+
 	}else if(verb == "fin"){ halt = true; } 
         else error(UNKNOWN_COMMAND); 
 };
