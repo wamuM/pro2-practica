@@ -26,9 +26,7 @@ public:
 	*
 	* @pre True
 	*
-	* @return The number of products
-	*
-	* @post The number of elements have been returned
+	* @post The number of elements has been returned
 	*
 	* @cplx Constant
 	*/
@@ -39,9 +37,6 @@ public:
 	*
 	* @pre True
 	*
-	* @param productId The id of the product
-	* @return If it has a product
-	*
 	* @post The return value is true if it the catalogue has the value, false otherwise
 	*
 	* @cplx Constant
@@ -51,13 +46,9 @@ public:
 	/**
 	* @brief It creates a new products and efficiently adds it to the Catalogue
 	*
-	* @pre True
+	* @pre weight and volume are both positive integers
 	*
-	* @param weight The weight of the new product
-	* @param volume The volume of the new product
-	* @return The id of the new product
-	*
-	* @post The new product has been created and addded to the catalogue
+	* @post A new product with weight weight and volume volume has been created and addded to the catalogue, and its id has been returned
 	*
 	* @cplx Amortized constant
 	*/
@@ -68,9 +59,6 @@ public:
 	* 
 	* @pre The product exists
 	*
-	* @param productId The id of the product
-	* @return The specified product
-	*
 	* @post The specified product has been returned
 	*
 	* @cplx Constant
@@ -80,9 +68,7 @@ public:
 	/**
 	* @brief It prints in the std output the specified product
 	*
-	* @pre The product exists
-	*
-	* @param productId The id of the product
+	* @pre The product exists and productid is its id
 	*
 	* @post The product has been printed
 	*

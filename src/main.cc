@@ -11,7 +11,7 @@
 *
 * Typedefs where used to abstract complex types or for clarity like Market, Product and Inventory. 
 *
-* English was used in comments and code (besides I/O) for cohesion with the names of the std library).
+* English was used in both comments and code (besides I/O messages) for cohesion with the names of the std library, our modules and the documentation.
 *
 * Github: https://github.com/wamuM/pro2-practica
 */

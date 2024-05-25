@@ -25,8 +25,11 @@ private:
 	 * @cplx Linear in the number of cities to read
 	 */
 	std::string _recursive_reading();
+
+
+	typedef pair<list<string>,int> Path;
 public:
-	/**
+	/** and productid is its id
 	* @brief The default constructor of River
 	*/
 	River();

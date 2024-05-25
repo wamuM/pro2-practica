@@ -14,8 +14,20 @@
 *
 * @pre halt is set to false and river, catalogue and ship have been properly initialized
 * @post The first command in the std input stream has been read (thus removed from the stream) and executed
+* @cplx Depends on the command
 */
 void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& ship);
+
+/**
+ * @brief A function that prints an error message corresponding to an error code
+ *
+ * @pre errorCode is a valid errorCode
+ *
+ * @post The error message has been printed in the std output
+ *
+ * @cplx Constant
+ */
+void error(int error_code);
 
 /**
 * @brief A function that consumes a specified number of tokens from the std input

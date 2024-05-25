@@ -42,7 +42,7 @@ void River::trade(const Catalogue& catalogue, const string& cityId1, const strin
 		  else if(inv1It->first > inv2It->first)++inv2It;
 	}
 }
-void Rivver::redistribute(const Catalogue& catalogue, const string& cityId){
+void River::redistribute(const Catalogue& catalogue, const string& cityId){
 	if(cityId == '#')return;
 
 	string rightId = _cities[cityId].get_right();
@@ -57,8 +57,57 @@ void Rivver::redistribute(const Catalogue& catalogue, const string& cityId){
 void River::redistribute(const Catalogue& catalogue){
 	redistribute(catalogue,_outlet);
 }
-void River::do_trip(Ship& ship, const Catalogue& catalogue){
-	ship.get_stock_id();
+River::Path River::_find_best_trip(const Ship ship, const string&_cityId){
+	if(cityId == '#')return River::Path(list(),0);
+
+	int citySupply = _cities[cityId].get_surplus(ship.get_demand_id());
+	int cityDemand = _cities[cityId].get_surplus(ship.get_supply_id());
+
+	int  buyAmount = 0;
+	int sellAmount = 0;
+	if(citySupply > 0)  buyAmount = ship.get_demand_amount() > citySupply ? citySupply : ship.get_demand_amount();
+	if(cityDemand > 0) sellAmount = ship.get_supply_amount() > cityDemand ? cityDemand : ship.get_supply_amount();
+	
+	ship.buy(buyAmount);
+	ship.sell(sellAmount);
+	int totalTransaction = buyAmount + sellAmount; 
+
+	River::Path leftPath  = _find_best_trip(ship, _cities[cityId].get_left())
+	River::Path rightPath = _find_best_trip(ship, _cities[cityId].get_right())
+
+	bool chooseLeft = false;
+	if(leftPath.second == rightPath.second) chooseLeft = leftPath.first.size() < leftPath.first.size();
+	else chooseLeft = leftPath.second > rightPath.second; 
+
+	if(chooseLeft){
+		leftPath.first.push_front(cityId);
+		leftPath.second += totalTransaction;
+		return leftPath;	
+	} else {
+		rightPath.first.push_front(cityId);
+		rightPath.second += totalTransaction;
+		return rightPath;	
+	}
+}
+int River::do_trip(Ship& ship, const Catalogue& catalogue){
+	River::Path bestPath = _find_best_trip(ship, _outlet);
+
+	for(auto it = bestPath.first.begin(); it != bestPath.first.end(); ++it){
+		int citySupply = _cities[it*].get_surplus(ship.get_demand_id());
+		int cityDemand = _cities[it*].get_surplus(ship.get_supply_id());
+
+		int  buyAmount = 0;
+		int sellAmount = 0;
+		if(citySupply > 0)  buyAmount = ship.get_demand_amount() > citySupply ? citySupply : ship.get_demand_amount();
+		if(cityDemand > 0) sellAmount = ship.get_supply_amount() > cityDemand ? cityDemand : ship.get_supply_amount();
+
+		ship.buy(buyAmount);
+		ship.sell(sellAmount);
+		
+		_cities[it*].add_supply(ship.get_demand_id(), catalogue.get_product(ship.get_demand_id()), -buyAmount);
+		_cities[it*].add_supply(ship.get_supply_id(), catalogue.get_product(ship.get_supply_id()), sellAmount);
+	}
+	return bestPath.second; 
 }
 string River::_recursive_reading(){
 	string cityId;

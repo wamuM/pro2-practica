@@ -17,15 +17,15 @@ void consume(int numberOfTokens){
 }
 // --- Error Codes ----
 constexpr int UNKNOWN_COMMAND = 0;
-// not same/exist city/product
-constexpr int   PRODUCT_IN_CITY  = 7;
+// not same/exist city/product (I spent way too much time giving logic to the err codes)
+constexpr int   PRODUCT_IN_CITY  = 7; 
 constexpr int N_PRODUCT_IN_CITY  = 6;
-constexpr int    CITY_N_EXIST    = 5; 
+constexpr int    CITY_N_EXIST    = 5;
 constexpr int PRODUCT_N_EXIST    = 4;  
-constexpr int    SAME_CITY       = 3;
+constexpr int    SAME_CITY       = 3; 
 constexpr int    SAME_PRODUCT    = 2;
 //My hope is that this gets optimized at compile time. (Like #define but data safe?)
-void error(int error_code){
+void error(int errorCode){
 	
 }
 void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& ship){
