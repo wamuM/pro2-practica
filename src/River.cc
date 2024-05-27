@@ -21,6 +21,7 @@ void River::set_city(const string& cityId, const City& city){
 	_cities[cityId] = city;
 }
 
+
 int River::min(int a, int b){
 	if(a < b)return a;
 	else return b;
@@ -65,18 +66,10 @@ pair<int,int> River::_calculate_transaction(Ship& ship, const string& cityId) co
 
 River::Path River::_find_best_path(Ship ship, const string& cityId){
 	if(cityId == "#")return River::Path();
+	if(ship.get_demand_amount() == 0 and ship.get_supply_amount() == 0)return River::Path();
 
 	pair<int,int> transaction = _calculate_transaction(ship, cityId);
 	int totalTransaction = transaction.first + transaction.second;
-
-	if( ship.get_demand_amount() == 0 and ship.get_supply_amount() == 0 ){
-		if(totalTransaction == 0)return River::Path();
-		River::Path path;
-		path.affectedCities.push(cityId);
-		path.totalTransaction = totalTransaction;
-		path.length = 1;
-		return path;
-	}
 
 	River::Path  leftPath = _find_best_path(ship, get_city(cityId).get_left());
 	River::Path rightPath = _find_best_path(ship, get_city(cityId).get_right());
@@ -95,7 +88,7 @@ River::Path River::_find_best_path(Ship ship, const string& cityId){
 				return leftPath;
 			}	
 		}else{
-			leftPath.affectedCities.push(cityId);
+			leftPath.affectedCities.push(Ship::SignedTransaction(cityId,transaction));
 			leftPath.totalTransaction += totalTransaction;
 			leftPath.length += 1;
 			return leftPath;
@@ -109,7 +102,7 @@ River::Path River::_find_best_path(Ship ship, const string& cityId){
 				return rightPath;
 			}	
 		}else{
-			rightPath.affectedCities.push(cityId);
+			rightPath.affectedCities.push(Ship::SignedTransaction(cityId,transaction));
 			rightPath.totalTransaction += totalTransaction;
 			rightPath.length += 1;
 			return rightPath;
@@ -121,15 +114,12 @@ int River::do_trip(Ship& ship, const Catalogue& catalogue){
 	River::Path bestPath = _find_best_path(ship, _outlet);
 
 	if(bestPath.totalTransaction == 0)return 0;//Do nothing if nothing could be done
-
-	int originalSupply = ship.get_supply_amount();
-	int originalDemand = ship.get_demand_amount();
-
+	
 	string cityId = "";
 	while(not bestPath.affectedCities.empty()){
-		cityId = bestPath.affectedCities.top();
+		cityId = bestPath.affectedCities.top().first;
 
-		pair<int,int> transaction = _calculate_transaction(ship, cityId);
+		pair<int,int> transaction = bestPath.affectedCities.top().second;
 
 		_cities[cityId].add_supply(ship.get_demand_id(), catalogue.get_product(ship.get_demand_id()), -transaction.first);
 		_cities[cityId].add_supply(ship.get_supply_id(), catalogue.get_product(ship.get_supply_id()),  transaction.second);
@@ -138,9 +128,6 @@ int River::do_trip(Ship& ship, const Catalogue& catalogue){
 	}
 
 	ship.log(cityId); //last city
-	
-	ship.set_supply(ship.get_supply_id(),originalSupply); //For some fucked up reason the ship shouldn't get modified
-	ship.set_demand(ship.get_demand_id(),originalDemand);
 	
 	return bestPath.totalTransaction;
 }
@@ -158,3 +145,12 @@ void River::read(){
 	_outlet = _recursive_reading();
 }
 
+bool River::apply_read_inventory(const std::string& cityId, int& productCount, const Catalogue& catalogue){
+	return	_cities[cityId].read_inventory(productCount,catalogue);
+}
+void River::apply_set_product_market(const std::string& cityId, int productId, const Product& product, int supply, int demand){
+	_cities[cityId].set_product_market(productId, product, supply, demand);
+}
+void River::apply_remove_product(const std::string& cityId, int productId, const Product& product){
+	_cities[cityId].remove_product(productId, product);
+}

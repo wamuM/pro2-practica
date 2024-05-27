@@ -68,12 +68,10 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 			error(CITY_N_EXIST); 
 			return;	
 		}
-		City city = river.get_city(cityId);
-		if(not city.read_inventory(productCount, catalogue)){
+		if(not river.apply_read_inventory(cityId, productCount, catalogue)){
 			consume(2 + productCount*3);
 			error(PRODUCT_N_EXIST);
 		}
-		river.set_city(cityId, city);
 
 	}else if(verb == "ls" or verb == "leer_inventarios"){
 		cout<<endl;
@@ -87,12 +85,11 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 				consume(productCount*3);
 				error(CITY_N_EXIST);
 			}
-			City city = river.get_city(cityId);	
-			if(not city.read_inventory(productCount,catalogue)){
+				
+			if(not river.apply_read_inventory(cityId, productCount, catalogue)){
 				consume(2 + productCount*3);
 				error(PRODUCT_N_EXIST);
 			};
-			river.set_city(cityId, city);
 			cin>>cityId;
 		}
 	}else if(verb == "mb" or verb == "modificar_barco"){//We are not using ship.read() because ship.read() assumes the data is valid
@@ -146,12 +143,10 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 		if(not catalogue.has_product(productId)) error(PRODUCT_N_EXIST);
 		else if(not river.has_city(cityId)) error(CITY_N_EXIST);
 		else{
-			City city = river.get_city(cityId);
-			if(city.has_product(productId)){ error(PRODUCT_IN_CITY); return; }
+			if(river.get_city(cityId).has_product(productId)){ error(PRODUCT_IN_CITY); return; }
 		
-			city.set_product_market(productId, catalogue.get_product(productId), supply, demmand);
-			city.print_total();
-			river.set_city(cityId, city);
+			river.apply_set_product_market(cityId, productId, catalogue.get_product(productId), supply, demmand);
+			river.get_city(cityId).print_total();
 		}
 	}else if(verb == "mp" or verb == "modificar_prod"){
 		string cityId;
@@ -162,12 +157,10 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 		if(not catalogue.has_product(productId)) error(PRODUCT_N_EXIST);
 		else if(not river.has_city(cityId)) error(CITY_N_EXIST);
 		else {
-			City city = river.get_city(cityId);
-			if(not city.has_product(productId)){ error(N_PRODUCT_IN_CITY); return; }
+			if(not river.get_city(cityId).has_product(productId)){ error(N_PRODUCT_IN_CITY); return; }
 			
-			city.set_product_market(productId, catalogue.get_product(productId), supply, demmand);
-			city.print_total();
-			river.set_city(cityId, city);
+			river.apply_set_product_market(cityId, productId, catalogue.get_product(productId), supply, demmand);
+			river.get_city(cityId).print_total();
 		}
 	}else if(verb == "qp" or verb == "quitar_prod"){
 		string cityId;
@@ -178,12 +171,10 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 		if(not catalogue.has_product(productId)) error(PRODUCT_N_EXIST);
 		else if(not river.has_city(cityId)) error(CITY_N_EXIST);
 		else {
-			City city = river.get_city(cityId);
-			if(not city.has_product(productId)){ error(N_PRODUCT_IN_CITY); return; }
+			if(not river.get_city(cityId).has_product(productId)){ error(N_PRODUCT_IN_CITY); return; }
 			
-			city.remove_product(productId, catalogue.get_product(productId));
-			city.print_total();
-			river.set_city(cityId, city);
+			river.apply_remove_product(cityId, productId, catalogue.get_product(productId));
+			river.get_city(cityId).print_total();
 		}
 
 	}else if(verb == "cp" or verb == "consultar_prod"){

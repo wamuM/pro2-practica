@@ -18,7 +18,7 @@ private:
 	struct Path {
 		int totalTransaction = 0;
 		int length = 0;
-		std::stack<std::string> affectedCities;
+		std::stack<Ship::SignedTransaction > affectedCities;
 	};
 
 	std::map<std::string,City> _cities;//!< @brief A map that links a city id to its city.
@@ -154,4 +154,17 @@ public:
 	* @cplx n·log(n) where n is the number of cities in the std input
 	*/
 	void read();
+
+	/**
+	*@brief Reads the inventory of the city 
+	*Note: This method is a wraper of the City::read_inventory method
+	*@pre The city must be in the river and the pre of City::read_inventory must be true
+	*@post That of City::read_inventory
+	*
+	*@cplx That of City::read_inventory
+	*@see City::read_inventory
+	*/
+	bool apply_read_inventory(const std::string& cityId, int& productCount, const Catalogue& catalogue);
+	void apply_set_product_market(const std::string& cityId, int productId, const Product& product, int supply, int demand);
+	void apply_remove_product(const std::string& cityId, int productId, const Product& product);
 };

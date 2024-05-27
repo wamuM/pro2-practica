@@ -94,6 +94,9 @@ void City::trade(const Catalogue& catalogue, City& city){
 	const auto inv1ItEnd = this->_inventory.end();	
 	const auto inv2ItEnd =  city._inventory.end();	
 
+	int delta_weight = 0;
+	int delta_volume = 0;
+
 	while(inv1It != inv1ItEnd and inv2It != inv2ItEnd){
 		if(inv1It->first == inv2It->first){
 			int productId = inv1It->first;
@@ -102,29 +105,28 @@ void City::trade(const Catalogue& catalogue, City& city){
 
 			if(thisSurplus > 0 and citySurplus < 0){// 1 gives to 2
 				int given = City::min(thisSurplus,-citySurplus);
-				inv2It->second.first += given;
 				inv1It->second.first -= given;
-				 city._total_product.first  += given*catalogue.get_product(productId).first;
-				this->_total_product.first  -= given*catalogue.get_product(productId).first;
-				 city._total_product.second += given*catalogue.get_product(productId).second;
-				this->_total_product.second -= given*catalogue.get_product(productId).second;
+				inv2It->second.first += given;
+				delta_weight -= given*catalogue.get_product(productId).first;
+				delta_volume -= given*catalogue.get_product(productId).second;
 				
 			}else if(thisSurplus < 0 and citySurplus > 0){// 2 gives to 1
 				int given = City::min(-thisSurplus,citySurplus);
 				inv1It->second.first += given;
 				inv2It->second.first -= given;
-				this->_total_product.first  += given*catalogue.get_product(productId).first;
-				 city._total_product.first  -= given*catalogue.get_product(productId).first;
-				this->_total_product.second += given*catalogue.get_product(productId).second;
-				 city._total_product.second -= given*catalogue.get_product(productId).second;
-				
+				delta_weight += given*catalogue.get_product(productId).first;
+				delta_volume += given*catalogue.get_product(productId).second;
 			}
 			++inv1It;
 			++inv2It;
 		} else  if(inv1It->first < inv2It->first)++inv1It;
 		  else/*if(inv1It->first > inv2It->first)*/++inv2It;
 	}
+	this->_total_product.first  += delta_weight; 
+	this->_total_product.second += delta_volume; 
 
+	 city._total_product.first  -= delta_weight; 
+	 city._total_product.second -= delta_volume;
 
 }
 
