@@ -198,9 +198,7 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 		else {
 			City city = river.get_city(cityId);
 			if(not city.has_product(productId)){ error(N_PRODUCT_IN_CITY); return; }
-			
 			city.print_product_market(productId);
-			river.set_city(cityId, city);
 		}
 
 	}else if(verb == "co" or verb == "comerciar"){

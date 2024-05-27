@@ -8,7 +8,7 @@ mkdir $directory
 
 cp ./src/* "$directory/" 
 cp ./Makefile_jutge "$directory/Makefile"
-cp ./README.md "$directory/README.md"
+# cp ./README.md "$directory/README.md"
 cp ./Doxyfile_jutge "$directory/Doxyfile"
 
 cd $directory

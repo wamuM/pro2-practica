@@ -38,8 +38,12 @@ string City::get_left() const{
 }
 
 void City::set_product_market(int productId, const Product& product, int supply, int demand){
-	if(has_product(productId))remove_product(productId, product);
-	_inventory[productId] = Market(supply,demand);
+	if(_inventory[productId].second != 0){
+		_total_product.first  -= _inventory[productId].first * product.first;
+		_total_product.second -= _inventory[productId].first * product.second;
+	}
+	_inventory[productId].first  = supply;
+	_inventory[productId].second = demand;
 	_total_product.first  += supply*product.first;
 	_total_product.second += supply*product.second;
 
@@ -72,18 +76,56 @@ Product City::get_total() const{
 	return _total_product;
 }
 
-Inventory::iterator City::inventory_begin(){
-	return _inventory.begin();
-}
-Inventory::iterator City::inventory_end(){
-	return _inventory.end();
-}
-
 void City::remove_product(int productId, const Product& product){
 	auto iterator = _inventory.find(productId);
 	_total_product.first  -= iterator->second.first*product.first;
 	_total_product.second -= iterator->second.first*product.second;
 	_inventory.erase(iterator);
+}
+
+int City::min(int a, int b){
+	if(a < b)return a;
+	else return b;
+}
+void City::trade(const Catalogue& catalogue, City& city){
+	auto inv1It = this->_inventory.begin();	
+	auto inv2It =  city._inventory.begin();	
+
+	const auto inv1ItEnd = this->_inventory.end();	
+	const auto inv2ItEnd =  city._inventory.end();	
+
+	while(inv1It != inv1ItEnd and inv2It != inv2ItEnd){
+		if(inv1It->first == inv2It->first){
+			int productId = inv1It->first;
+			int thisSurplus = inv1It->second.first - inv1It->second.second; 
+			int citySurplus = inv2It->second.first - inv2It->second.second;
+
+			if(thisSurplus > 0 and citySurplus < 0){// 1 gives to 2
+				int given = City::min(thisSurplus,-citySurplus);
+				inv2It->second.first += given;
+				inv1It->second.first -= given;
+				 city._total_product.first  += given*catalogue.get_product(productId).first;
+				this->_total_product.first  -= given*catalogue.get_product(productId).first;
+				 city._total_product.second += given*catalogue.get_product(productId).second;
+				this->_total_product.second -= given*catalogue.get_product(productId).second;
+				
+			}else if(thisSurplus < 0 and citySurplus > 0){// 2 gives to 1
+				int given = City::min(-thisSurplus,citySurplus);
+				inv1It->second.first += given;
+				inv2It->second.first -= given;
+				this->_total_product.first  += given*catalogue.get_product(productId).first;
+				 city._total_product.first  -= given*catalogue.get_product(productId).first;
+				this->_total_product.second += given*catalogue.get_product(productId).second;
+				 city._total_product.second -= given*catalogue.get_product(productId).second;
+				
+			}
+			++inv1It;
+			++inv2It;
+		} else  if(inv1It->first < inv2It->first)++inv1It;
+		  else/*if(inv1It->first > inv2It->first)*/++inv2It;
+	}
+
+
 }
 
 void City::print_inventory() const{

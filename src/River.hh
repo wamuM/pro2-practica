@@ -7,18 +7,32 @@
 #include <map>
 #include <string>
 #include <stack>
+#include <utility>
 
 #include "City.hh"
 #include "Ship.hh"
 
 class River{
 private:
-	typedef std::pair<std::stack<std::string>,int> Path;//<! @brief A type that represents a path within the river and its associated value
-
-
+	//! @brief A type that represents a path within the river and its associated value
+	struct Path {
+		int totalTransaction = 0;
+		int length = 0;
+		std::stack<std::string> affectedCities;
+	};
 
 	std::map<std::string,City> _cities;//!< @brief A map that links a city id to its city.
 	std::string _outlet;//!< @brief The id of the city that is at the river's outlet
+	
+	/**
+	 * @brief Utility function that gives the minimun value between a and b
+	 *
+	 * @pre True
+	 * @post The minimum value between a and b has been returned
+	 *
+	 * @cplx Constant
+	 */
+	static int min(int a, int b);
 	
 	/*
 	 * @brief Recursively reads cities from the std input
@@ -29,7 +43,6 @@ private:
 	 * @cplx Linear in the number of cities to read
 	 */
 	std::string _recursive_reading();
-
 
 	/**
 	 * @brief Makes all the cities after cityId trade
@@ -42,14 +55,22 @@ private:
 	void redistribute(const Catalogue& catalogue, const std::string& cityId);
 
 	/**
-	 * @brief Finds the best trip for the ship starting at cityId
+	 * @brief Calculates the best possible transaction between a ship and a city of the river
+	 * @pre cityId is a city of the river
+	 * @post ship has done the transaction and the amount bought by the ship and the amount sold by the ship are returned in that order.
+	 *
+	 * @cplx Constant
+	 */
+	std::pair<int,int> _calculate_transaction(Ship& ship, const std::string& cityId) const;
+	/**
+	 * @brief Finds the best path for the ship starting at cityId
 	 *
 	 * @pre cityId is a valid city
-	 * @post The best trip for the ship has been returned
+	 * @post The best path for the ship has been returned
 	 *
 	 * @cplx Linear in the number of cities after cityId
 	 */
-	Path _find_best_trip(Ship ship, const std::string& cityId);
+	Path _find_best_path(Ship ship, const std::string& cityId);
 public:
 	/** 
 	* @brief The default constructor of River
@@ -85,6 +106,15 @@ public:
 	 */
 	void set_city(const std::string& cityId, const City& city); 
 
+	/**
+	* @brief It does a trade between the cities
+	*
+	* @pre True
+	* @post The cities have traded
+	*
+	* @cplx Linear in the number of different products the city two cities have combined
+	*/
+	void trade(const Catalogue& catalogue, City& city1, City& city2);
 	/**
 	* @brief It does a trade between the cities
 	*

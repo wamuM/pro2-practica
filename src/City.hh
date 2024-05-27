@@ -24,6 +24,16 @@ private:
 
 	std::string _city_left;//!< @brief The city, looking south, at the left of this one
 	std::string _city_right;//!< @brief The city, looking south, at the right of this one
+	
+	/**
+	 * @brief Utility function that gives the minimun value between a and b
+	 *
+	 * @pre True
+	 * @post The minimum value between a and b has been returned
+	 *
+	 * @cplx Constant
+	 */
+	static int min(int a, int b);
 	/**
 	* @brief Reads the amount (supply and demand) of a product from the std input
 	*
@@ -196,20 +206,15 @@ public:
 	*/
 	void remove_product(int productId, const Product& product); 
 
-	/**
-	 * @brief Returns an iterator to the begining of the inventory (collection of products) of the city (points to the first element of the collection)
-	 * @pre True
-	 * @post the begining iterator has been returned
-	 */
-	Inventory::iterator inventory_begin();
 
 	/**
-	 * @brief Returns an iterator to the end of the inventory (collection of products) of the city (points to outside the collection)
+	 * @brief Makes this city trade with another city
 	 * @pre True
-	 * @post the end iterator has been returned
+	 * @post The two cities have traded
+	 *
+	 * @cplx Linear in the biggest number of different products in the two cities
 	 */
-	Inventory::iterator inventory_end();
-
+	void trade(const Catalogue& catalogue, City& city);
 	/**
 	* @brief Prints the inventory of the city into the std output
 	*
