@@ -31,12 +31,15 @@ void Catalogue::print_product(int productId) const{
 	    <<_products[productId-1].second<<endl;
 }
 
-void Catalogue::read(){
-	int n;
-	cin>>n;
-	while(n--){
+void Catalogue::read(int productCount){
+	while(productCount--){
 		int weight, volume;
 		cin>>weight>>volume;
 		emplace_product(weight,volume);
 	}
 };
+void Catalogue::read(){
+	int n;
+	cin>>n;
+	read(n);
+}

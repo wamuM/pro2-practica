@@ -77,14 +77,24 @@ public:
 	void print_product(int productId) const;
 
 	/**
-	* @brief It reads n from the std input and then n products that it adds to the catalogue
+	* @brief It reads and adds productCount products to the catalogue
 	*
-	* @pre There are n products in the std input
+	* @pre There are productCount products in the std input
 	*
 	* @post The products have been consumed from the std input and added to the catalogue
 	* 
+	* @cplx Linear in productCount (As long as emplace_product remains constant)
+	*/
+	void read(int productCount);
+
+	/**
+	* @brief It reads n from the std input and adds n producst to the catalogue
+	* @pre There is n, and n products in the std input
+	* @post n and the products have been consumed from the std input and added to the catalogue
+	*
 	* @cplx Linear in n (As long as emplace_product remains constant)
 	*/
 	void read();
+
 };
 

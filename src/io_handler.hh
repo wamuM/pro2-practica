@@ -7,6 +7,11 @@
 
 #pragma once
 
+#include "River.hh"
+#include "Catalogue.hh"
+#include "Ship.hh"
+#include "City.hh"
+
 /**
 * @brief A function that reads the std input and interprets the operations there.
 *

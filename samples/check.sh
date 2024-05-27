@@ -1,13 +1,13 @@
-for file in "./samples/*.inp";
+#!/usr/bin/bash
+for file in ./samples/*.inp;
 do	
-	name = $(basename -s .inp $file)
-	./target/program < file > "./target/${name}.out"
+	name="$(basename "$file" .inp)"
+	echo "[!] Running $name"
+	./target/program < "./samples/$name.inp" > "./target/$name.out"
 done
-for file in "./samples/*.cor";
+for file in ./samples/*.cor;
 do
-	name = $(basename -s .cor $file)
+	name="$(basename "$file" .cor)"
 	echo "[=] Running diff on $name:"
-	diff ./target/${name}.out $file > "./target/${name}.diff" && echo "[-] Error: Output didn't match test samples" || echo "[+] Matched expected output"
+	diff "./target/$name.out" "./samples/$name.cor" > "./target/$name.diff"  && echo "[+] Matched expected output" || echo "[-] Error: Output didn't match test samples"
 done 
-
-

@@ -12,7 +12,7 @@ OBJ := $(patsubst ./src/%.cc,./objects/%.o,$(SRC))
 ./target/program: $(OBJ)
 	$(CC) $(C_FLAGS) -o $@ $^
 	chmod 755 ./target/program
-	echo Executable generated at ./target/program
+	@echo Executable generated at ./target/program
 
 ./objects/%.o: ./src/%.cc
 	$(CC) $(C_FLAGS) -o $@ -c $<

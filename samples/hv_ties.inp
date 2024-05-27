@@ -1,0 +1,44 @@
+2
+1 1 
+1 1
+Start
+R
+RR
+#
+#
+RL
+#
+#
+L
+LR
+#
+#
+LL
+#
+#
+1 10 2 0
+// ==Commands==
+// -- Left / Right --
+ls
+LL
+1
+1 11 1
+RR
+1
+1 11 1
+#
+hv
+eb
+// -- Short / Long --
+ls
+L
+1
+1 11 1
+RR
+1
+1 11 1
+#
+hv
+eb
+// === End ===
+fin
