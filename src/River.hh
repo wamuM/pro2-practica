@@ -18,7 +18,7 @@ private:
 	struct Path {
 		int totalTransaction = 0;
 		int length = 0;
-		std::stack<Ship::SignedTransaction > affectedCities;
+		std::string finalCity;
 	};
 
 	std::map<std::string,City> _cities;//!< @brief A map that links a city id to its city.
@@ -42,7 +42,9 @@ private:
 	 *
 	 * @cplx Linear in the number of cities to read
 	 */
-	std::string _recursive_reading();
+	std::string _recursive_reading(std::string cityId);
+
+	void _travel_path(Ship& ship, const Catalogue& catalogue, const std::string& cityId);
 
 	/**
 	 * @brief Makes all the cities after cityId trade

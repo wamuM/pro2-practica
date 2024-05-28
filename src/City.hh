@@ -22,6 +22,7 @@ private:
 
 	Product _total_product;//!< @brief The total weight and volume of products within the city
 
+	std::string _city_root;
 	std::string _city_left;//!< @brief The city, looking south, at the left of this one
 	std::string _city_right;//!< @brief The city, looking south, at the right of this one
 	
@@ -91,7 +92,14 @@ public:
 	* @cplx Constant
 	*/
 	void set_right(const std::string& cityId);
-	
+
+	std::string get_root() const{
+		return _city_root;
+	};
+	void set_root(const std::string& cityId){
+		_city_root = cityId;
+	}
+
 	/**
 	 * @brief Returns the city at the top left of this one, looking south.
 	 *

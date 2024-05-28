@@ -143,7 +143,7 @@ void interpret_command(bool& halt, River& river, Catalogue& catalogue, Ship& shi
 		if(not catalogue.has_product(productId)) error(PRODUCT_N_EXIST);
 		else if(not river.has_city(cityId)) error(CITY_N_EXIST);
 		else{
-			if(river.get_city(cityId).has_product(productId)){ error(PRODUCT_IN_CITY); return; }
+			if(river.get_city(cityId).has_product(productId)){error(PRODUCT_IN_CITY); return; }
 		
 			river.apply_set_product_market(cityId, productId, catalogue.get_product(productId), supply, demmand);
 			river.get_city(cityId).print_total();

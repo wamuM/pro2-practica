@@ -15,7 +15,7 @@ bool River::has_city(const string& cityId) const{
 }
 
 City River::get_city(const string& cityId) const{
-	return _cities.find(cityId)->second;
+	return _cities.at(cityId);
 }
 void River::set_city(const string& cityId, const City& city){
 	_cities[cityId] = city;
@@ -69,7 +69,7 @@ River::Path River::_find_best_path(Ship ship, const string& cityId){
 	if(ship.get_demand_amount() == 0 and ship.get_supply_amount() == 0)return River::Path();
 
 	pair<int,int> transaction = _calculate_transaction(ship, cityId);
-	int totalTransaction = transaction.first + transaction.second;
+	int transactionSum = transaction.first + transaction.second;
 
 	River::Path  leftPath = _find_best_path(ship, get_city(cityId).get_left());
 	River::Path rightPath = _find_best_path(ship, get_city(cityId).get_right());
@@ -80,30 +80,44 @@ River::Path River::_find_best_path(Ship ship, const string& cityId){
 	else chooseLeft = leftPath.totalTransaction > rightPath.totalTransaction;
 
 	if(chooseLeft){
-		if(totalTransaction == 0){
-			if(leftPath.totalTransaction == 0){
-				return leftPath;
+		if(transactionSum == 0){//This city does nothing
+			if(leftPath.totalTransaction == 0){//This city does nothing and neither
+				//does this branch
+				return River::Path();
 			}else{
 				leftPath.length += 1;
 				return leftPath;
 			}	
-		}else{
-			leftPath.affectedCities.push(Ship::SignedTransaction(cityId,transaction));
-			leftPath.totalTransaction += totalTransaction;
+		}else{//This city does something
+			if(leftPath.totalTransaction == 0){//It's the first one to do so
+				River::Path path;
+				path.totalTransaction = transactionSum;
+				path.finalCity = cityId;
+				path.length = 1;
+				return path;
+			}
+			leftPath.totalTransaction += transactionSum; 
 			leftPath.length += 1;
 			return leftPath;
 		}
 	}else{
-		if(totalTransaction == 0){
-			if(rightPath.totalTransaction == 0){
-				return rightPath;
+		if(transactionSum == 0){//This city does nothing
+			if(rightPath.totalTransaction == 0){//This city does nothing and neither
+				//does this branch
+				return River::Path();
 			}else{
 				rightPath.length += 1;
 				return rightPath;
 			}	
-		}else{
-			rightPath.affectedCities.push(Ship::SignedTransaction(cityId,transaction));
-			rightPath.totalTransaction += totalTransaction;
+		}else{//This city does something
+			if(rightPath.totalTransaction == 0){//It's the first one to do so
+				River::Path path;
+				path.totalTransaction = transactionSum;
+				path.finalCity = cityId;
+				path.length = 1;
+				return path;
+			}
+			rightPath.totalTransaction += transactionSum; 
 			rightPath.length += 1;
 			return rightPath;
 		}
@@ -115,34 +129,39 @@ int River::do_trip(Ship& ship, const Catalogue& catalogue){
 
 	if(bestPath.totalTransaction == 0)return 0;//Do nothing if nothing could be done
 	
-	string cityId = "";
-	while(not bestPath.affectedCities.empty()){
-		cityId = bestPath.affectedCities.top().first;
+	int supplyAmount = ship.get_supply_amount();
+	int demandAmount = ship.get_demand_amount();
+	_travel_path(ship, catalogue, bestPath.finalCity);
 
-		pair<int,int> transaction = bestPath.affectedCities.top().second;
-
-		_cities[cityId].add_supply(ship.get_demand_id(), catalogue.get_product(ship.get_demand_id()), -transaction.first);
-		_cities[cityId].add_supply(ship.get_supply_id(), catalogue.get_product(ship.get_supply_id()),  transaction.second);
-
-		bestPath.affectedCities.pop();
-	}
-
-	ship.log(cityId); //last city
+	ship.set_supply(ship.get_supply_id(),supplyAmount);
+	ship.set_demand(ship.get_demand_id(),demandAmount);
+	ship.log(bestPath.finalCity); //last city
 	
 	return bestPath.totalTransaction;
 }
+void River::_travel_path(Ship& ship, const Catalogue& catalogue, const string& cityId){
+	if(cityId == "#")return;
+	else _travel_path(ship, catalogue, get_city(cityId).get_root());
+	pair<int,int> transaction = _calculate_transaction(ship, cityId);
 
-string River::_recursive_reading(){
+	if(transaction.first == 0 and transaction.second == 0)return;
+	_cities[cityId].add_supply(ship.get_demand_id(), catalogue.get_product(ship.get_demand_id()), -transaction.first);
+	_cities[cityId].add_supply(ship.get_supply_id(), catalogue.get_product(ship.get_supply_id()),  transaction.second);
+
+}
+
+string River::_recursive_reading(string root){
 	string cityId;
 	cin>>cityId;
 	if(cityId == "#")return "#";
-	_cities[cityId].set_right( _recursive_reading());
-	_cities[cityId].set_left(  _recursive_reading());
+	_cities[cityId].set_right( _recursive_reading(cityId));
+	_cities[cityId].set_left(  _recursive_reading(cityId));
+	_cities[cityId].set_root(root);
 	return cityId;
 }
 void River::read(){
-	if(not _cities.empty()) _cities.erase(_cities.begin(),_cities.end());
-	_outlet = _recursive_reading();
+	if(not _cities.empty()) _cities.clear();
+	_outlet = _recursive_reading("#");
 }
 
 bool River::apply_read_inventory(const std::string& cityId, int& productCount, const Catalogue& catalogue){

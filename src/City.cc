@@ -18,7 +18,7 @@ int City::inventory_size() const{
 }
 
 void City::clear_inventory(){
-	_inventory.erase(_inventory.begin(), _inventory.end());
+	_inventory.clear();
 	_total_product.first  = 0;
 	_total_product.second = 0;
 }
@@ -38,7 +38,7 @@ string City::get_left() const{
 }
 
 void City::set_product_market(int productId, const Product& product, int supply, int demand){
-	if(_inventory[productId].second != 0){
+	if(has_product(productId)){
 		_total_product.first  -= _inventory[productId].first * product.first;
 		_total_product.second -= _inventory[productId].first * product.second;
 	}
@@ -70,7 +70,7 @@ bool City::has_product(int productId) const{
 }
 
 Market City::get_product_market(int productId) const{
-	return _inventory.find(productId)->second;
+	return _inventory.at(productId);
 }
 Product City::get_total() const{
 	return _total_product;

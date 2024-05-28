@@ -38,8 +38,6 @@ private:
 	*/
 	void _print_log() const;
 public:
-	typedef std::pair<std::string,std::pair<int,int> > SignedTransaction;//!< @brief A type that represents a transaction between the ship and a city
-
 	Ship();//!< The default constructor of the Ship class
 
 	/**
