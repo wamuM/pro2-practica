@@ -44,7 +44,7 @@ private:
 	 */
 	std::string _recursive_reading(std::string cityId);
 
-	void _travel_path(Ship& ship, const Catalogue& catalogue, const std::string& cityId);
+	void _travel_path(int& buyAmount, int& sellAmount, int buyId, int sellId, const Catalogue& catalogue, const std::string& cityId);
 
 	/**
 	 * @brief Makes all the cities after cityId trade
@@ -63,7 +63,8 @@ private:
 	 *
 	 * @cplx Constant
 	 */
-	std::pair<int,int> _calculate_transaction(Ship& ship, const std::string& cityId) const;
+	std::pair<int,int> _calculate_transaction(int& buyAmount, int& sellAmount, int buyId, int sellId, const std::string& cityId) const;
+
 	/**
 	 * @brief Finds the best path for the ship starting at cityId
 	 *
@@ -72,7 +73,7 @@ private:
 	 *
 	 * @cplx Linear in the number of cities after cityId
 	 */
-	Path _find_best_path(Ship ship, const std::string& cityId);
+	Path _find_best_path(int buyAmount, int sellAmount, int buyId, int sellId, const std::string& cityId);
 public:
 	/** 
 	* @brief The default constructor of River

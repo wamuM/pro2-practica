@@ -50,29 +50,29 @@ void River::redistribute(const Catalogue& catalogue){
 }
 
 
-pair<int,int> River::_calculate_transaction(Ship& ship, const string& cityId) const{
-	int citySupply =  get_city(cityId).get_surplus(ship.get_demand_id());
-	int cityDemand = -get_city(cityId).get_surplus(ship.get_supply_id());
+pair<int,int> River::_calculate_transaction(int& buyAmount, int& sellAmount, int buyId, int sellId, const string& cityId) const{
+	int citySupply =  get_city(cityId).get_surplus( buyId);
+	int cityDemand = -get_city(cityId).get_surplus(sellId);
 
-	int  buyAmount = 0;
-	int sellAmount = 0;
-	if(citySupply > 0)  buyAmount = min(ship.get_demand_amount(), citySupply); 
-	if(cityDemand > 0) sellAmount = min(ship.get_supply_amount(), cityDemand);
-	
-	ship.buy(buyAmount);
-	ship.sell(sellAmount);
-	return pair<int,int>(buyAmount,sellAmount); 
+	int  toBuy = 0;
+	int toSell = 0;
+	if(citySupply > 0)  toBuy = min( buyAmount, citySupply); 
+	if(cityDemand > 0) toSell = min(sellAmount, cityDemand);
+
+	 buyAmount -= toBuy;
+	sellAmount -= toSell;
+	return pair<int,int>(toBuy,toSell); 
 }
 
-River::Path River::_find_best_path(Ship ship, const string& cityId){
+River::Path River::_find_best_path(int buyAmount, int sellAmount, int buyId, int sellId, const string& cityId){
 	if(cityId == "#")return River::Path();
-	if(ship.get_demand_amount() == 0 and ship.get_supply_amount() == 0)return River::Path();
+	if(buyAmount == 0 and sellAmount == 0)return River::Path();
 
-	pair<int,int> transaction = _calculate_transaction(ship, cityId);
+	pair<int,int> transaction = _calculate_transaction(buyAmount, sellAmount, buyId, sellId, cityId);
 	int transactionSum = transaction.first + transaction.second;
 
-	River::Path  leftPath = _find_best_path(ship, get_city(cityId).get_left());
-	River::Path rightPath = _find_best_path(ship, get_city(cityId).get_right());
+	River::Path  leftPath = _find_best_path(buyAmount, sellAmount, buyId, sellId, get_city(cityId).get_left());
+	River::Path rightPath = _find_best_path(buyAmount, sellAmount, buyId, sellId,get_city(cityId).get_right());
 
 	bool chooseLeft;
 	if(leftPath.totalTransaction == rightPath.totalTransaction) 
@@ -125,28 +125,30 @@ River::Path River::_find_best_path(Ship ship, const string& cityId){
 }
 
 int River::do_trip(Ship& ship, const Catalogue& catalogue){
-	River::Path bestPath = _find_best_path(ship, _outlet);
+	int  buyAmount = ship.get_demand_amount();
+	int sellAmount = ship.get_supply_amount();
+	int  buyId = ship.get_demand_id();
+	int sellId = ship.get_supply_id();
+	River::Path bestPath = _find_best_path(buyAmount, sellAmount, buyId, sellId, _outlet);
 
 	if(bestPath.totalTransaction == 0)return 0;//Do nothing if nothing could be done
 	
-	int supplyAmount = ship.get_supply_amount();
-	int demandAmount = ship.get_demand_amount();
-	_travel_path(ship, catalogue, bestPath.finalCity);
+	_travel_path(buyAmount, sellAmount, buyId, sellId, catalogue, bestPath.finalCity);
 
-	ship.set_supply(ship.get_supply_id(),supplyAmount);
-	ship.set_demand(ship.get_demand_id(),demandAmount);
 	ship.log(bestPath.finalCity); //last city
 	
 	return bestPath.totalTransaction;
 }
-void River::_travel_path(Ship& ship, const Catalogue& catalogue, const string& cityId){
+void River::_travel_path(int& buyAmount, int& sellAmount, int buyId, int sellId, const Catalogue& catalogue, const string& cityId){
 	if(cityId == "#")return;
-	else _travel_path(ship, catalogue, get_city(cityId).get_root());
-	pair<int,int> transaction = _calculate_transaction(ship, cityId);
+	else _travel_path(buyAmount, sellAmount, buyId, sellId, catalogue, get_city(cityId).get_root());
 
-	if(transaction.first == 0 and transaction.second == 0)return;
-	_cities[cityId].add_supply(ship.get_demand_id(), catalogue.get_product(ship.get_demand_id()), -transaction.first);
-	_cities[cityId].add_supply(ship.get_supply_id(), catalogue.get_product(ship.get_supply_id()),  transaction.second);
+	pair<int,int> transaction = _calculate_transaction(buyAmount, sellAmount, buyId, sellId, cityId);
+	//There are more efficient ways of doing this, by storing the _calculate_transaction from before in a return value for instance. But it took me way too long to optimize the rest and now I've ran out of time. 
+
+	if(transaction.first == 0 and transaction.second == 0)return;//This could also be avoided if instead of returning the finalCity _find_best_path returns a list/stack of the best path, but again, ran out of time.
+	_cities[cityId].add_supply( buyId, catalogue.get_product( buyId), -transaction.first);
+	_cities[cityId].add_supply(sellId, catalogue.get_product(sellId),  transaction.second);
 
 }
 
