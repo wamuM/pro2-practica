@@ -1,3 +1,7 @@
+/**
+* @file Catalogue.cc
+* @brief This file contains all the code of the Catalogue class
+*/
 #include "Catalogue.hh"
 
 #include <vector>

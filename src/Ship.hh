@@ -1,6 +1,6 @@
 /**
 * @file Ship.hh
-* @brief This file contains the definition of the Ship class
+* @brief This file contains the headers of the Ship class
 */
 #pragma once
 
@@ -10,11 +10,11 @@
 
 class Ship {
 private:
-	int _supply_amount; //!< The amount of product the ship is suppplying
-	int _supply_id;//!< The id of the product the ship is supplying
+	int _supply_amount; //!< The amount of product the ship is suppplying (selling)
+	int _supply_id;//!< The id of the product the ship is supplying (selling)
 
-	int _demand_amount;//!< The amount of product the ship wants
-	int _demand_id;//!< The id of the product the ship wants
+	int _demand_amount;//!< The amount of product the ship wants (buys)
+	int _demand_id;//!< The id of the product the ship wants (buys)
 
 	std::list<std::string> _log;//!< A log of all of the ship's trips
 	
@@ -38,31 +38,40 @@ private:
 	*/
 	void _print_log() const;
 public:
-	Ship();//!< The default constructor of the Ship class
-
+	Ship();//!< @brief The default constructor of the Ship class
+	
 	/**
-	 * @brief It returns the id of the item the ship has a supply off
+	 * @brief Constructor of the ship class
+	 *
+	 * @pre True
+	 * @post The implicit parameter has now the same demand and supply as \em ship but a new \em _log
+	 *
+	 * @cplx Constant
+	 */
+	Ship(const Ship& ship);
+	/**
+	 * @brief It returns the id of the product the ship has a supply off
 	 *
 	 * @pre True
 	 * 
-	 * @post The id of the item the ship has a supply off has been returned
+	 * @post The id of the product the ship has a supply off has been returned
 	 *
 	 * @cplx Constant
 	 */
 	int get_supply_id() const;
 	/**
-	 * @brief It returns the id of the item the ship wants to buy
+	 * @brief It returns the id of the product the ship wants to buy
 	 *
 	 * @pre True
 	 * 
-	 * @post The id of the item the ship wants to buy
+	 * @post The id of the product the ship wants to buy
 	 *
 	 * @cplx Constant
 	 */
 	int get_demand_id() const;
 
 	/**
-	 * @brief It returns the amount of the item the ship has a supply off
+	 * @brief It returns the amount of the product the ship has a supply off
 	 *
 	 * @pre True
 	 * 
@@ -73,7 +82,7 @@ public:
 	int get_supply_amount() const;
 
 	/**
-	 * @brief It returns the amount of the item the ship wants to buy 
+	 * @brief It returns the amount of the product the ship wants to buy 
 	 *
 	 * @pre True
 	 * 
@@ -104,7 +113,7 @@ public:
 	void set_demand(int productId, int amount);
 
 	/**
-	* @brief The ship sells amount of its stock
+	* @brief The ship sells \em amount of its stock
 	*
 	* @pre The ship has more products than what he wants to sell
 	* @pro The ship has sold amount of products
@@ -113,7 +122,7 @@ public:
 	*/
 	void sell(int amount);
 	/**
-	* @brief The ship buys amount products
+	* @brief The ship buys \em amount products
 	*
 	* @pre The ship wants amount of products.
 	* @post The ship has sold amount of products
@@ -123,7 +132,7 @@ public:
 	void buy(int amount);
 
 	/**
-	* @brief Returns the travel log of the 
+	* @brief Returns the travel log of the ship 
 	*
 	* @pre True
 	* @post The travel log has been returned
@@ -133,10 +142,10 @@ public:
 	std::list<std::string> get_log() const;
 
 	/**
-	 * @brief Logs the trip
+	 * @brief Logs the city
 	 *
 	 * @pre cityId is a valid id 
-	 * @post the trip has been logged into the ship
+	 * @post the city has been logged into the ship
 	 *
 	 * @cplx Constant
 	 */

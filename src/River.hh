@@ -1,6 +1,6 @@
 /**
  * @file River.hh
- * @brief This file conains the definition of River
+ * @brief This file conains the headers of River class and the River::Path struct.
  */
 #pragma once
 
@@ -12,29 +12,27 @@
 #include "City.hh"
 #include "Ship.hh"
 
+/**
+ * @brief A class that represents the River Basin
+ */
 class River{
 private:
-	//! @brief A type that represents a path within the river and its associated value
+	/**
+	 * @brief A struct that represents a path into the river and its associated value
+	 * The path goes from the \em _outlet to the \em finalCity
+	 *
+	 * Since the River Basin is organized as a binary tree, by definition for any two cities there is only one path between them. 
+	 */
 	struct Path {
-		int totalTransaction = 0;
-		int length = 0;
-		std::string finalCity;
+		int totalTransaction = 0;//!< The total amount of products exchanged in transactions on the path 
+		int length = 0;//!< The number of cities on the path
+		std::string finalCity;//!< The final city this path goes to
 	};
 
 	std::map<std::string,City> _cities;//!< @brief A map that links a city id to its city.
 	std::string _outlet;//!< @brief The id of the city that is at the river's outlet
 	
 	/**
-	 * @brief Utility function that gives the minimun value between a and b
-	 *
-	 * @pre True
-	 * @post The minimum value between a and b has been returned
-	 *
-	 * @cplx Constant
-	 */
-	static int min(int a, int b);
-	
-	/*
 	 * @brief Recursively reads cities from the std input
 	 *
 	 * @pre There are cities properly described in the std input
@@ -44,13 +42,18 @@ private:
 	 */
 	std::string _recursive_reading(std::string cityId);
 
-	void _travel_path(int& buyAmount, int& sellAmount, int buyId, int sellId, const Catalogue& catalogue, const std::string& cityId);
+	/**
+	 * @brief The ship travels until \em cityId is reached, selling and buying the maximum amount of products it can at each city. 
+	 * @pre \em catalogue is the catalogue of the river and the ship
+	 * @post The path has been travelled and the cities and the ship have been updated accordingly
+	 */
+	void _travel_path(Ship& ship, const Catalogue& catalogue, const std::string& cityId);
 
 	/**
-	 * @brief Makes all the cities after cityId trade
+	 * @brief Makes all the cities from cityId southwards trade.
 	 *
 	 * @pre cityId is a valid city
-	 * @post All the cities after cityId have traded
+	 * @post All the cities from cityId southwards have traded
 	 *
 	 * @cplx n·m where n is the number of cities and m the number of products in the catalogue
 	 */
@@ -58,22 +61,23 @@ private:
 
 	/**
 	 * @brief Calculates the best possible transaction between a ship and a city of the river
-	 * @pre cityId is a city of the river
-	 * @post ship has done the transaction and the amount bought by the ship and the amount sold by the ship are returned in that order.
+	 *
+	 * @pre \em cityId is a city of the river and \em catalogue the catalogue of both the \em ship and the city
+	 * @post \em ship has done the transaction and the amount bought by the ship and the amount sold by the ship are returned in that order \n(if \em modifyCity was set to false the city was not modified, likewise if \em modifyShip was set to false the ship was not modified)
 	 *
 	 * @cplx Constant
 	 */
-	std::pair<int,int> _calculate_transaction(int& buyAmount, int& sellAmount, int buyId, int sellId, const std::string& cityId) const;
+	int _transaction(Ship& ship, const Catalogue& catalogue, const std::string& cityId, bool modifyCity, bool modifyShip);
 
 	/**
-	 * @brief Finds the best path for the ship starting at cityId
+	 * @brief Finds the best Path for the ship to commerce starting at \em cityId
 	 *
-	 * @pre cityId is a valid city
-	 * @post The best path for the ship has been returned
+	 * @pre \em cityId is a valid city
+	 * @post The best path for the \em ship has been returned
 	 *
-	 * @cplx Linear in the number of cities after cityId
+	 * @cplx Linear in the number of cities after \em cityId
 	 */
-	Path _find_best_path(int buyAmount, int sellAmount, int buyId, int sellId, const std::string& cityId);
+	Path _find_best_path( Ship ship, const Catalogue& catalogue, const std::string& cityId);
 public:
 	/** 
 	* @brief The default constructor of River
@@ -83,7 +87,7 @@ public:
 	* @brief Checks if a city exists within the river
 	*
 	* @pre True
-	* @post True has been returned if it has a city, false otherwise
+	* @post True has been returned if the river has a city, false otherwise
 	*
 	* @cplx Logarithmic in the number of cities in the river
 	*/
@@ -100,7 +104,7 @@ public:
 	City get_city(const std::string& cityId) const; 
 
 	/**
-	 * @brief Updates a City withing the river. 
+	 * @brief Updates or adds a City withing the river. 
 	 *
 	 * @pre True
 	 * @post The city has been updated in the River. 
@@ -139,12 +143,12 @@ public:
 	void redistribute(const Catalogue& catalogue);
 
 	/**
-	 * @brief Makes the ship do a trip
+	 * @brief Makes the ship do a trip ("hacer viaje")
 	 *
 	 * @pre True
 	 * @post The ship has done a trip and it returns the total number of items bought and sold
 	 *
-	 * @cplx Binomial in the number of cities
+	 * @cplx Linear in the number of cities
 	 */
 	int do_trip(Ship& ship, const Catalogue& catalogue);
 	
@@ -160,7 +164,7 @@ public:
 
 	/**
 	*@brief Reads the inventory of the city 
-	*Note: This method is a wraper of the City::read_inventory method
+	*\n Note: This method is a wraper of the City::read_inventory method
 	*@pre The city must be in the river and the pre of City::read_inventory must be true
 	*@post That of City::read_inventory
 	*
@@ -168,6 +172,25 @@ public:
 	*@see City::read_inventory
 	*/
 	bool apply_read_inventory(const std::string& cityId, int& productCount, const Catalogue& catalogue);
+	/**
+	*@brief Sets the market of the city 
+	*\n Note: This method is a wraper of the City::set_product_market method
+	*@pre The city must be in the river and the pre of City::set_product_market must be true
+	*@post That of City::set_product_market
+	*
+	*@cplx That of City::set_product_market
+	*@see City::set_product_market
+	*/
 	void apply_set_product_market(const std::string& cityId, int productId, const Product& product, int supply, int demand);
+
+	/**
+	*@brief Removes a product from the city 
+	*\n Note: This method is a wraper of the City::remove_product method
+	*@pre The city must be in the river and the pre of City::remove_product must be true
+	*@post That of City::remove_product
+	*
+	*@cplx That of City::remove_product
+	*@see City::remove_product
+	*/
 	void apply_remove_product(const std::string& cityId, int productId, const Product& product);
 };

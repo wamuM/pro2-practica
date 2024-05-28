@@ -1,3 +1,7 @@
+/**
+ * @file City.cc
+ * @brief This file contains all the code of the City class
+ */
 #include "City.hh"
 
 #include <string>
@@ -5,6 +9,7 @@
 using namespace std;
 
 #include "Catalogue.hh"
+#include "useful.hh"
 
 City::City(){
 	_total_product = Product(0,0);
@@ -37,6 +42,12 @@ string City::get_left() const{
 	return _city_left;
 }
 
+string City::get_north() const{
+	return _city_north;
+}
+void City::set_north(const std::string& cityId){
+	_city_north = cityId;
+}
 void City::set_product_market(int productId, const Product& product, int supply, int demand){
 	if(has_product(productId)){
 		_total_product.first  -= _inventory[productId].first * product.first;
@@ -83,10 +94,6 @@ void City::remove_product(int productId, const Product& product){
 	_inventory.erase(iterator);
 }
 
-int City::min(int a, int b){
-	if(a < b)return a;
-	else return b;
-}
 void City::trade(const Catalogue& catalogue, City& city){
 	auto inv1It = this->_inventory.begin();	
 	auto inv2It =  city._inventory.begin();	
@@ -104,14 +111,14 @@ void City::trade(const Catalogue& catalogue, City& city){
 			int citySurplus = inv2It->second.first - inv2It->second.second;
 
 			if(thisSurplus > 0 and citySurplus < 0){// 1 gives to 2
-				int given = City::min(thisSurplus,-citySurplus);
+				int given = min(thisSurplus,-citySurplus);
 				inv1It->second.first -= given;
 				inv2It->second.first += given;
 				delta_weight -= given*catalogue.get_product(productId).first;
 				delta_volume -= given*catalogue.get_product(productId).second;
 				
 			}else if(thisSurplus < 0 and citySurplus > 0){// 2 gives to 1
-				int given = City::min(-thisSurplus,citySurplus);
+				int given = min(-thisSurplus,citySurplus);
 				inv1It->second.first += given;
 				inv2It->second.first -= given;
 				delta_weight += given*catalogue.get_product(productId).first;

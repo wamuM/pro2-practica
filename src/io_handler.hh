@@ -1,8 +1,8 @@
 /**
  * @file io_handler.hh
- * @brief This file has everything necesary to deal with user input and program output
+ * @brief This file has all the headers necesary to deal with user input and program output
  *
- * This file has functions to throw erros, deal with input and to interpret commands but not to "read objects" as that task is left to each class.
+ * This file has functions to throw erros, deal with input and to interpret commands but not to read and print objects as that task is left to each class.
  */
 
 #pragma once

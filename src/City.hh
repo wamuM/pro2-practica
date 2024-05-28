@@ -1,6 +1,6 @@
 /**
 * @file City.hh
-* This file contains the definitions of the City class, the Amount type and the Inventory type.
+* @brief This file contains the headers of the City class, the Market type and the Inventory type.
 */
 #pragma once
 
@@ -22,24 +22,15 @@ private:
 
 	Product _total_product;//!< @brief The total weight and volume of products within the city
 
-	std::string _city_root;
+	std::string _city_north;//!< @brief The city directly north of this one
 	std::string _city_left;//!< @brief The city, looking south, at the left of this one
 	std::string _city_right;//!< @brief The city, looking south, at the right of this one
 	
 	/**
-	 * @brief Utility function that gives the minimun value between a and b
-	 *
-	 * @pre True
-	 * @post The minimum value between a and b has been returned
-	 *
-	 * @cplx Constant
-	 */
-	static int min(int a, int b);
-	/**
-	* @brief Reads the amount (supply and demand) of a product from the std input
+	* @brief Reads the market (supply and demand) of a product from the std input
 	*
-	* @pre productId and product are valid products
-	* @post The supply and demand have been read and consumed from the std input and are now in the city
+	* @pre  The new supply and demand of \em product  are in the std input and \em productId is the id of \em product.
+	* @post The supply and demand have been read and consumed from the std input and the city now has that supply and that demand of \em product. 
 	*
 	* @cplx Logarithmic in the number of products in the city 
 	*/
@@ -52,7 +43,7 @@ public:
 	City();
 
 	/**
-	 * @brief It returns the number of products the city has
+	 * @brief It returns the number of products the city has or wants
 	 * 
 	 * @pre True
 	 * @post The number of products in the city has been returned 
@@ -62,10 +53,10 @@ public:
 	int inventory_size() const;
 
 	/**
-	 * @brief It clears the city of any product
+	 * @brief It clears the city of any product supply or demand
 	 *
 	 * @pre True
-	 * @post The city now has no products
+	 * @post The city now has no products and wants no products
 	 *
 	 * @cplx Linear in the number of products
 	 */
@@ -73,9 +64,7 @@ public:
 	/**
 	* @brief It sets the provided city at the left, looking south, of this one
 	*
-	* @pre cityId refers to a valid city
-	* @param cityId The id of the city at the left
-	*
+	* @pre \em cityId refers to a valid city or "#", to indicate that there is no city
 	* @post The provided city is now at the left of this one
 	*
 	* @cplx Constant
@@ -85,20 +74,34 @@ public:
 	/**
 	* @brief It sets the provided city at the right, looking south, of this one
 	*
-	* @pre True
-	* @param cityId The id of the city at the right 
+	* @pre \em cityId refers to a valid city or "#", to indicate that there is no city
 	* @post The provided city is now at the right of this one
 	*
 	* @cplx Constant
 	*/
 	void set_right(const std::string& cityId);
+	
+	/**
+	 * @brief It sets the provided city at the north of this one.
+	 *
+	 * @pre \em cityId refers to a valid city or "#", to indicate that there is no city
+	 * @post The provided city is now directly north of this one
+	 *
+	 * @cplx Constant
+	 */
+	void set_north(const std::string& cityId);
 
-	std::string get_root() const{
-		return _city_root;
-	};
-	void set_root(const std::string& cityId){
-		_city_root = cityId;
-	}
+	/**
+	 * @brief It returns the city at the north of this one.
+	 *
+	 * @pre True
+	 * @post If the city has a city directly north of itself its id is returned, "#" otherwise
+	 *
+	 * @cplx Constant
+	 */
+	std::string get_north() const;
+
+	
 
 	/**
 	 * @brief Returns the city at the top left of this one, looking south.
@@ -120,10 +123,10 @@ public:
 	std::string get_right() const;
 
 	/**
-	* @brief It checks if the city has a product
+	* @brief It checks if the city has or wants a product
 	* 
 	* @pre True
-	* @post True has been returned if the city has the specified product, false otherwise. 
+	* @post True has been returned if the city has or wants the specified product, false otherwise. 
 	*
 	* @cplx Logarithmic in the number of products in the city
 	*/
@@ -132,12 +135,7 @@ public:
 	/**
 	* @brief it sets the supply and demand of a product
 	*
-	* @pre True
-	* @param productId The id of the product
-	* @param product The product object 
-	* @param supply The new supply of that product in the city
-	* @param demand The new demand of that product in the city
-	*
+	* @pre \em product is a valid product and \em productId its id and \em supply and \em demand the new supply and demand of that product in the city respectively.
 	* @post The product supply and demand has been set 
 	*
 	* @cplx Logarithmic in the number of products in the city
@@ -147,7 +145,7 @@ public:
 	/**
 	* @brief Returns the supply of a product in the city
 	*
-	* @pre The city has that product
+	* @pre The city has or wants the \em productId product
 	* @post The supply of that product has been returned
 	*
 	* @cplx Logarithmic in the number of products in the city
@@ -155,10 +153,10 @@ public:
 	int get_supply(int productId) const;
 
 	/**
-	 * @brief Adds amount to the number of productId products the city can supply.
+	 * @brief Adds\em amount to the number of \em productId products the city can supply.
 	 * 
-	 * @pre product is a valid product and productId is its id
-	 * @post The city now has amount more(or less if <0) product
+	 * @pre  \em product is a valid product and \em productId is its id
+	 * @post The city now has \m amount more of product (or less if amount < 0).
 	 *
 	 * @cplx Constant
 	 */
@@ -167,7 +165,7 @@ public:
 	/**
 	* @brief Returns the demand of a product in the city
 	*
-	* @pre The city has that product
+	* @pre The city wants \em productId
 	* @post The demand of the product has been returned
 	*
 	* @cplx Logarithmic in the number of products in the city
@@ -175,10 +173,10 @@ public:
 	int get_demand(int productId) const;
 
 	/**
-	 * @brief Returns the amount of product the city doesn't want (supply - demand)
+	 * @brief Returns the amount of \em productId product the city doesn't want (supply - demand)
 	 *
 	 * @pre True
-	 * @post If the city has the product, the amount of product the city wants. 0 otherwise
+	 * @post If the city has the product, the amount of product the city diesn't want. 0 otherwise.
 	 *
 	 * @cplx Constant
 	 */
@@ -187,7 +185,7 @@ public:
 	/**
 	* @brief Returns the market(supply and demand) of a product in the city
 	*
-	* @pre The city has the product
+	* @pre The city has or wants the product
 	* @post The market of the city has been returned
 	*
 	* @cplx Logarithmic in the number of products in the city
@@ -207,7 +205,7 @@ public:
 	/**
 	* @brief Removes a product from the city (more efficient than set_product_amount(productId,product,0,0) )
 	*
-	* @pre The city has the product
+	* @pre The city has or wants the product
 	* @post The product has been removed from the city and there is no more demand for it
 	*
 	* @cplx Logarithmic in the number of products in the city
@@ -217,7 +215,7 @@ public:
 
 	/**
 	 * @brief Makes this city trade with another city
-	 * @pre True
+	 * @pre \em catalogue is the catalogue of both cities
 	 * @post The two cities have traded
 	 *
 	 * @cplx Linear in the biggest number of different products in the two cities
@@ -235,9 +233,9 @@ public:
 	void print_inventory() const;
 
 	/**
-	* @brief Prints the amount(supply and demand) of product in the city into the std output
+	* @brief Prints the market(supply and demand) of product in the city into the std output
 	*
-	* @pre The city has productId
+	* @pre The city has or wants \em productId
 	*
 	* @post The amount of product and its demand in the city has been printed into the std output
 	*
@@ -270,8 +268,8 @@ public:
 	/**
 	* @brief Reads an inventory from the std input and adds it to the city
 	*
-	* @pre productCount is the number of products in the std input
-	* @post If no errors happened the inventory has been consumed from the std input and added to the city and true is returned, otherwise false is returned and productCount is the number of products there are left. 
+	* @pre \em productCount is the number of products in the std input and \em catalogue is the catalogue of the city
+	* @post If no errors happened the inventory has been consumed from the std input and added to the city and true is returned, otherwise false is returned and \em productCount has been modified to the number of products there are left. 
 	*
 	* @cplx Linear in the amount of products
 	*/

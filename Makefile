@@ -34,5 +34,5 @@ clean:
 	rm -rf ./target/* ./objects/*
 
 ## Packs-up the code
-stage: 
+stage: clean docs 
 	./stage.sh

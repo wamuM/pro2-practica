@@ -1,3 +1,9 @@
+/**
+* @file io_handler.cc
+* @brief This file contains all the code to deal with user input and program output
+*
+ * This file has functions to throw erros, deal with input and to interpret commands but not to read and print objects as that task is left to each class.
+*/
 #include "io_handler.hh"
 
 #include <string>
@@ -18,8 +24,8 @@ void consume(int numberOfTokens){
 // --- Error Codes ----
 constexpr int UNKNOWN_COMMAND = 0;
 // not same/exist city/product (I spent way too much time giving logic to the err codes)
-constexpr int   PRODUCT_IN_CITY  = 7; 
-constexpr int N_PRODUCT_IN_CITY  = 6;
+constexpr int   PRODUCT_IN_CITY  = 7;//not_same_city 
+constexpr int N_PRODUCT_IN_CITY  = 6;//not_same_product
 constexpr int    CITY_N_EXIST    = 5;
 constexpr int PRODUCT_N_EXIST    = 4;  
 constexpr int    SAME_CITY       = 3; 

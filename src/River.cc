@@ -1,3 +1,7 @@
+/**
+* @file River.cc
+* @brief This file contains all the code of the River class
+*/
 #include "River.hh"
 
 #include <string>
@@ -5,6 +9,7 @@
 using namespace std;
 
 #include "City.hh"
+#include "useful.hh"
 
 River::River(){
 	_outlet = "#";
@@ -21,11 +26,6 @@ void River::set_city(const string& cityId, const City& city){
 	_cities[cityId] = city;
 }
 
-
-int River::min(int a, int b){
-	if(a < b)return a;
-	else return b;
-}
 void River::trade(const Catalogue& catalogue, City& city1, City& city2){
 	city1.trade(catalogue,city2);
 }
@@ -50,29 +50,35 @@ void River::redistribute(const Catalogue& catalogue){
 }
 
 
-pair<int,int> River::_calculate_transaction(int& buyAmount, int& sellAmount, int buyId, int sellId, const string& cityId) const{
-	int citySupply =  get_city(cityId).get_surplus( buyId);
-	int cityDemand = -get_city(cityId).get_surplus(sellId);
+int River::_transaction(Ship& ship, const Catalogue& catalogue, const string& cityId, bool modifyCity, bool modifyShip){
+	int citySupply =  get_city(cityId).get_surplus(ship.get_demand_id());
+	int cityDemand = -get_city(cityId).get_surplus(ship.get_supply_id());
 
-	int  toBuy = 0;
-	int toSell = 0;
-	if(citySupply > 0)  toBuy = min( buyAmount, citySupply); 
-	if(cityDemand > 0) toSell = min(sellAmount, cityDemand);
+	int  buyAmount = 0;
+	int sellAmount = 0;
+	if(citySupply > 0)  buyAmount = min(ship.get_demand_amount(), citySupply); 
+	if(cityDemand > 0) sellAmount = min(ship.get_supply_amount(), cityDemand);
 
-	 buyAmount -= toBuy;
-	sellAmount -= toSell;
-	return pair<int,int>(toBuy,toSell); 
+	int transaction = buyAmount + sellAmount;
+	if(modifyCity and transaction != 0){
+		_cities[cityId].add_supply(ship.get_demand_id(), catalogue.get_product(ship.get_demand_id()), -buyAmount);
+		_cities[cityId].add_supply(ship.get_supply_id(), catalogue.get_product(ship.get_supply_id()), sellAmount);
+	}
+	if(modifyShip){
+		ship.buy(buyAmount);
+		ship.sell(sellAmount);
+	}
+	return transaction; 
 }
 
-River::Path River::_find_best_path(int buyAmount, int sellAmount, int buyId, int sellId, const string& cityId){
+River::Path River::_find_best_path(Ship ship, const Catalogue& catalogue, const string& cityId){
 	if(cityId == "#")return River::Path();
-	if(buyAmount == 0 and sellAmount == 0)return River::Path();
+	if(ship.get_supply_amount() == 0 and ship.get_demand_amount() == 0)return River::Path();
 
-	pair<int,int> transaction = _calculate_transaction(buyAmount, sellAmount, buyId, sellId, cityId);
-	int transactionSum = transaction.first + transaction.second;
+	int transactionSum = _transaction(ship, catalogue, cityId, false, true);
 
-	River::Path  leftPath = _find_best_path(buyAmount, sellAmount, buyId, sellId, get_city(cityId).get_left());
-	River::Path rightPath = _find_best_path(buyAmount, sellAmount, buyId, sellId,get_city(cityId).get_right());
+	River::Path  leftPath = _find_best_path(ship, catalogue, get_city(cityId).get_left());
+	River::Path rightPath = _find_best_path(ship, catalogue, get_city(cityId).get_right());
 
 	bool chooseLeft;
 	if(leftPath.totalTransaction == rightPath.totalTransaction) 
@@ -125,31 +131,24 @@ River::Path River::_find_best_path(int buyAmount, int sellAmount, int buyId, int
 }
 
 int River::do_trip(Ship& ship, const Catalogue& catalogue){
-	int  buyAmount = ship.get_demand_amount();
-	int sellAmount = ship.get_supply_amount();
-	int  buyId = ship.get_demand_id();
-	int sellId = ship.get_supply_id();
-	River::Path bestPath = _find_best_path(buyAmount, sellAmount, buyId, sellId, _outlet);
+	Ship explorerShip = Ship(ship);
+	
+	River::Path bestPath = _find_best_path(explorerShip, catalogue, _outlet);
 
 	if(bestPath.totalTransaction == 0)return 0;//Do nothing if nothing could be done
 	
-	_travel_path(buyAmount, sellAmount, buyId, sellId, catalogue, bestPath.finalCity);
+	_travel_path(explorerShip, catalogue, bestPath.finalCity);
 
 	ship.log(bestPath.finalCity); //last city
 	
 	return bestPath.totalTransaction;
 }
-void River::_travel_path(int& buyAmount, int& sellAmount, int buyId, int sellId, const Catalogue& catalogue, const string& cityId){
+void River::_travel_path(Ship& ship, const Catalogue& catalogue, const string& cityId){
 	if(cityId == "#")return;
-	else _travel_path(buyAmount, sellAmount, buyId, sellId, catalogue, get_city(cityId).get_root());
+	
+	_travel_path(ship, catalogue, get_city(cityId).get_north());
 
-	pair<int,int> transaction = _calculate_transaction(buyAmount, sellAmount, buyId, sellId, cityId);
-	//There are more efficient ways of doing this, by storing the _calculate_transaction from before in a return value for instance. But it took me way too long to optimize the rest and now I've ran out of time. 
-
-	if(transaction.first == 0 and transaction.second == 0)return;//This could also be avoided if instead of returning the finalCity _find_best_path returns a list/stack of the best path, but again, ran out of time.
-	_cities[cityId].add_supply( buyId, catalogue.get_product( buyId), -transaction.first);
-	_cities[cityId].add_supply(sellId, catalogue.get_product(sellId),  transaction.second);
-
+	_transaction(ship, catalogue, cityId, true, true);
 }
 
 string River::_recursive_reading(string root){
@@ -158,7 +157,7 @@ string River::_recursive_reading(string root){
 	if(cityId == "#")return "#";
 	_cities[cityId].set_right( _recursive_reading(cityId));
 	_cities[cityId].set_left(  _recursive_reading(cityId));
-	_cities[cityId].set_root(root);
+	_cities[cityId].set_north(root);
 	return cityId;
 }
 void River::read(){

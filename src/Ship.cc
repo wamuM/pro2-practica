@@ -1,3 +1,7 @@
+/**
+* @file Ship.cc
+* @brief This file contains all the code of the Ship class
+*/
 #include "Ship.hh"
 
 #include <string>
@@ -12,6 +16,16 @@ Ship::Ship(){
 
 	_demand_amount = 0;
 	_demand_id = 0;
+
+	_log = list<string>();
+}
+
+Ship::Ship(const Ship& ship){
+	this->_supply_amount = ship._supply_amount;
+	this->_supply_id     = ship._supply_id;
+
+	this->_demand_amount = ship._demand_amount;
+	this->_demand_id     = ship._demand_id;
 
 	_log = list<string>();
 }
